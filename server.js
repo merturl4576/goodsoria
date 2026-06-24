@@ -160,8 +160,10 @@ app.post('/api/favorites/toggle', requireAuth, async (req, res) => {
   res.json({ product: p, favorited: !has, count: Number(count) });
 });
 
-/* ---------- statik site (API'den SONRA) ---------- */
-app.use(express.static(__dirname, { extensions: ['html'] }));
+/* ---------- statik site (public/; API'den SONRA) ---------- */
+const PUBLIC = path.join(__dirname, 'public');
+app.get('/', (req, res) => res.sendFile(path.join(PUBLIC, 'platform.html')));
+app.use(express.static(PUBLIC, { extensions: ['html'] }));
 
 /* ---------- başlat: yalnız doğrudan çalıştırılınca (Vercel'de app export edilir) ---------- */
 if (require.main === module) {
