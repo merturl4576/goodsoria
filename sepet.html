@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sepetim — Goodsoria · Herbalife Bağımsız Distribütör Platformu</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/diri.css">
+<style>
+/* sepet + kayıtsız ödeme */
+.cart-row{display:flex;align-items:center;gap:.85rem;padding:.85rem 0;border-bottom:1px solid var(--line)}
+.cart-row:last-child{border-bottom:0}
+.cart-row .ci{width:2.8rem;height:2.8rem;border-radius:11px;flex:none;display:grid;place-items:center;background:oklch(0.95 0.04 152);color:var(--brand);font-weight:800;font-family:"Bricolage Grotesque"}
+.cart-row .cinfo{flex:1;min-width:0}
+.cart-row .cinfo b{display:block;font-weight:700;font-size:.93rem;line-height:1.2}
+.cart-row .cinfo small{color:var(--muted);font-size:.8rem}
+.qty{display:flex;align-items:center;gap:.45rem;flex:none}
+.qty button{width:1.7rem;height:1.7rem;border-radius:8px;border:1px solid var(--line);background:var(--bg,#fff);font-weight:800;cursor:pointer;color:var(--ink);line-height:1}
+.qty span{min-width:1.3rem;text-align:center;font-weight:800;font-size:.9rem}
+.cart-row .lt{font-weight:800;min-width:4.6rem;text-align:right;font-size:.92rem}
+.cart-row .rm{border:0;background:none;color:var(--muted);cursor:pointer;font-size:.95rem;padding:.2rem .25rem;flex:none}
+.cart-sum{display:flex;justify-content:space-between;align-items:center;margin-top:1rem;padding-top:1rem;border-top:2px solid var(--line)}
+.cart-sum b{font-family:"Bricolage Grotesque";font-size:1.5rem;color:var(--ink)}
+.co-note{display:flex;gap:.6rem;align-items:flex-start;background:oklch(0.97 0.025 150);border:1px solid var(--line);border-radius:12px;padding:.8rem .9rem;font-size:.85rem;margin-bottom:1rem;line-height:1.4}
+.co-note svg{flex:none;color:var(--brand);margin-top:1px}
+.co-form .field{margin-bottom:.7rem}
+.co-form label.lbl{display:block;font-size:.8rem;font-weight:700;color:var(--muted);margin-bottom:.3rem}
+.co-form input,.co-form textarea{width:100%;font:inherit;padding:.6rem .7rem;border:1px solid var(--line);border-radius:10px;background:var(--bg,#fff);color:var(--ink)}
+.co-form textarea{resize:vertical;min-height:3.4rem}
+.field-2{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.kvkk-line{display:flex;gap:.5rem;font-size:.76rem;color:var(--muted);line-height:1.35;margin:.4rem 0 .9rem;align-items:flex-start}
+.kvkk-line input{margin-top:.15rem;accent-color:var(--brand);flex:none;width:auto}
+.kvkk-line a{color:var(--brand);text-decoration:underline}
+.cart-empty{text-align:center;padding:2.6rem 1rem;color:var(--muted)}
+.ok-box{text-align:center;padding:2.2rem 1.2rem;max-width:560px;margin:0 auto}
+.ok-box .ok-ic{width:3.6rem;height:3.6rem;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;margin:0 auto 1rem}
+.ok-box h2{font-family:"Bricolage Grotesque";margin:.2rem 0 .5rem}
+.ono{font-weight:800;color:var(--brand)}
+.fine{font-size:.78rem;color:var(--muted);margin-top:.9rem}
+</style>
+</head>
+<body data-page="sepet">
+
+<div class="compliance"><div class="in">
+  <b>Herbalife® Bağımsız Distribütör</b><span class="sep">•</span><span>Abdoul Raouf Savadogo</span>
+  <span class="sep">•</span><span>İstanbul</span><span class="sep">•</span><span>0500 000 00 00</span>
+  <span class="badge"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Orijinal Herbalife ürünleri</span>
+</div></div>
+
+<div class="app">
+  <aside class="sidebar"></aside>
+  <div class="content">
+    <header class="topbar">
+      <button class="icbtn menubtn" id="menuBtn" aria-label="Menü"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <label class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input id="q" type="search" placeholder="Ürün ara…" autocomplete="off"><kbd>/</kbd></label>
+      <div class="tb-actions">
+        <button class="icbtn" aria-label="Bildirimler"><span class="dotbadge"></span><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></button>
+        <button class="icbtn" id="cartBtn" aria-label="Sepet"><span class="cartcount" id="cc">0</span><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg></button>
+        <button class="btn btn-primary btn-sm" data-join>Giriş / Üye ol</button>
+      </div>
+    </header>
+
+    <main>
+      <div class="crumb"><a href="magaza.html">Mağaza</a><span class="s">/</span><span>Sepetim</span></div>
+      <div class="welcome">
+        <div><h1>Sepetim</h1><span class="sub">Kayıt olmadan sipariş verebilirsin — üyelik gerekmez.</span></div>
+      </div>
+
+      <div class="dash-grid" id="cartWrap">
+        <!-- ürünler -->
+        <div class="card" data-reveal>
+          <div class="ch"><h3>Ürünler</h3><a href="magaza.html">+ Ürün ekle</a></div>
+          <div id="cartItems"></div>
+          <div class="cart-sum" id="cartSum" hidden><span style="color:var(--muted);font-weight:700">Toplam</span><b id="cartTotal">0 ₺</b></div>
+        </div>
+
+        <!-- teslimat & sipariş -->
+        <div class="card" data-reveal>
+          <div class="ch"><h3>Teslimat & Sipariş</h3></div>
+          <div class="co-note">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V8a5 5 0 0 1 10 0"/><path d="m9 16 2 2 4-4"/></svg>
+            <span><b>Üyelik gerekmez.</b> Bilgilerini gir, siparişin doğrudan bağımsız distribütörün <b>Abdoul Raouf Savadogo</b>'a ulaşsın. İstersen takip için sonra hesap oluşturursun.</span>
+          </div>
+          <form class="co-form" id="coForm" novalidate>
+            <div class="field"><label class="lbl" for="co-ad">Ad Soyad</label><input id="co-ad" type="text" autocomplete="name" placeholder="Adın soyadın"></div>
+            <div class="field"><label class="lbl" for="co-tel">Telefon</label><input id="co-tel" type="tel" autocomplete="tel" placeholder="05xx xxx xx xx"></div>
+            <div class="field"><label class="lbl" for="co-mail">E-posta <span style="font-weight:400">(opsiyonel)</span></label><input id="co-mail" type="email" autocomplete="email" placeholder="ornek@eposta.com"></div>
+            <div class="field"><label class="lbl" for="co-adres">Adres</label><textarea id="co-adres" autocomplete="street-address" placeholder="Mahalle, sokak, no, daire"></textarea></div>
+            <div class="field-2">
+              <div class="field"><label class="lbl" for="co-il">İl</label><input id="co-il" type="text" placeholder="İstanbul"></div>
+              <div class="field"><label class="lbl" for="co-ilce">İlçe</label><input id="co-ilce" type="text" placeholder="Kadıköy"></div>
+            </div>
+            <label class="kvkk-line"><input type="checkbox" id="co-kvkk"><span>Siparişimin işlenmesi ve teslimatı için iletişim/adres bilgilerimin kullanılmasını kabul ediyorum. <a href="#">KVKK Aydınlatma Metni</a>.</span></label>
+            <button class="btn btn-primary btn-block" type="submit">Siparişi Tamamla</button>
+            <p class="fine">Bu bir demo akıştır; gerçek ödeme/tahsilat alınmaz. Ödeme ve teslimat distribütörünle iletişimde netleşir.</p>
+          </form>
+        </div>
+      </div>
+
+      <!-- boş sepet -->
+      <div class="card cart-empty" id="emptyCard" hidden>
+        <p style="font-size:1.05rem;font-weight:700;color:var(--ink)">Sepetin boş 🛒</p>
+        <p>Hedefine uygun ürünleri keşfet, sepete ekle, kayıt olmadan sipariş ver.</p>
+        <a class="btn btn-primary btn-sm" href="magaza.html" style="margin-top:.6rem">Mağazaya git</a>
+      </div>
+
+      <!-- başarı -->
+      <div class="card ok-box" id="okCard" hidden>
+        <div class="ok-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <h2>Siparişin alındı! 🎉</h2>
+        <p>Sipariş no: <span class="ono" id="okNo"></span></p>
+        <p id="okMsg" style="color:var(--muted)"></p>
+        <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-top:1rem">
+          <a class="btn btn-primary btn-sm" href="magaza.html">Alışverişe devam</a>
+          <a class="btn btn-ghost btn-sm" href="platform.html">Ana sayfa</a>
+        </div>
+        <p class="fine">Siparişlerini takip etmek istersen <a href="#" data-join style="color:var(--brand);font-weight:700">hesap oluştur</a> — opsiyonel.</p>
+      </div>
+    </main>
+  </div>
+</div>
+
+<nav class="botnav"></nav>
+<div class="drawer" id="drawer"><div class="scrim" data-dclose></div><div class="panel"></div></div>
+<div class="toast" id="toast"></div>
+
+<script src="assets/diri.js"></script>
+<script>
+const fmt=n=>(n||0).toLocaleString('tr-TR')+' ₺';
+const wrap=$('#cartWrap'), empty=$('#emptyCard'), itemsEl=$('#cartItems'), sumEl=$('#cartSum');
+function renderCart(){
+  const cart=getCart();
+  if(!cart.length){ wrap.style.display='none'; if($('#okCard').hidden)empty.hidden=false; return; }
+  wrap.style.display=''; empty.hidden=true;
+  itemsEl.innerHTML=cart.map((it,i)=>`<div class="cart-row">
+    <span class="ci">${(it.name[0]||'•').toUpperCase()}</span>
+    <div class="cinfo"><b>${it.name}</b><small>${fmt(it.price)} / adet</small></div>
+    <div class="qty"><button data-dec="${i}" aria-label="Azalt">−</button><span>${it.qty}</span><button data-inc="${i}" aria-label="Arttır">+</button></div>
+    <div class="lt">${fmt(it.price*it.qty)}</div>
+    <button class="rm" data-rm="${i}" aria-label="Kaldır">✕</button>
+  </div>`).join('');
+  $('#cartTotal').textContent=fmt(cart.reduce((s,it)=>s+it.price*it.qty,0));
+  sumEl.hidden=false;
+  itemsEl.querySelectorAll('[data-inc]').forEach(b=>b.onclick=()=>{const c=getCart();c[+b.dataset.inc].qty++;saveCart(c);renderCart();});
+  itemsEl.querySelectorAll('[data-dec]').forEach(b=>b.onclick=()=>{const c=getCart();const i=+b.dataset.dec;c[i].qty--;if(c[i].qty<1)c.splice(i,1);saveCart(c);renderCart();});
+  itemsEl.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{const c=getCart();c.splice(+b.dataset.rm,1);saveCart(c);renderCart();toast('Üründen kaldırıldı');});
+}
+renderCart();
+
+/* girişliyse formu hesap bilgisiyle doldur */
+if(window.authReady)window.authReady.then(u=>{ if(!u)return; const a=$('#co-ad'),m=$('#co-mail'); if(a&&!a.value)a.value=u.name||''; if(m&&!m.value)m.value=u.email||''; });
+
+$('#coForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const cart=getCart();
+  if(!cart.length){toast('Sepetin boş');return;}
+  const ad=$('#co-ad').value.trim(), tel=$('#co-tel').value.trim(), adres=$('#co-adres').value.trim();
+  if(!ad||!tel||!adres){toast('Ad, telefon ve adres gerekli');return;}
+  if(!$('#co-kvkk').checked){toast('Devam için onay kutusunu işaretle');return;}
+  const il=$('#co-il').value.trim(), ilce=$('#co-ilce').value.trim();
+  const fullAddr=adres+(il?', '+il:'')+(ilce?' / '+ilce:'');
+  const authed=!!(window.isAuthed&&window.isAuthed());
+  let no='';
+  if(authed){
+    try{
+      const r=await fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({items:cart,address:fullAddr})});
+      const d=await r.json(); if(!r.ok)throw new Error(d.error||'Sipariş oluşturulamadı.');
+      no=d.order.ono;
+    }catch(err){ toast(err.message||'Sipariş hatası'); return; }
+  }else{
+    no='GD-'+Math.floor(100000+Math.random()*900000);
+    try{const o=JSON.parse(localStorage.getItem('goodsoria_orders')||'[]');o.push({no:no,ad:ad,tel:tel,mail:$('#co-mail').value.trim(),adres:fullAddr,items:cart,total:cart.reduce((s,it)=>s+it.price*it.qty,0)});localStorage.setItem('goodsoria_orders',JSON.stringify(o));}catch(err){}
+  }
+  saveCart([]);
+  wrap.style.display='none'; empty.hidden=true;
+  $('#okNo').textContent=no;
+  $('#okMsg').textContent=(ad.split(' ')[0]||'')+', siparişin distribütörüne iletildi. En kısa sürede telefonundan ('+tel+') seninle iletişime geçeceğiz.'+(authed?' Panelinden takip edebilirsin.':'');
+  $('#okCard').hidden=false;
+  window.scrollTo({top:0,behavior:'smooth'});
+  toast('Siparişin alındı ✓');
+});
+</script>
+</body>
+</html>

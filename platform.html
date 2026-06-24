@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Goodsoria — Herbalife Bağımsız Distribütör Platformu | Mağaza · Kazanç · Topluluk</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<meta name="description" content="Tek çatı altında Herbalife platformu: ürün mağazası, kişisel ürün bulucu, distribütörlük kazanç yolculuğu ve topluluk.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/diri.css">
+<style>
+/* VKİ (BMI) lead-magnet aracı — hero sağ kolon */
+.vki{background:var(--surface,#fff);border:1px solid var(--line);border-radius:20px;padding:1.3rem;box-shadow:0 24px 60px -38px rgba(20,60,40,.45);align-self:start}
+.vki-head{display:flex;align-items:center;gap:.7rem;margin-bottom:1rem}
+.vki-head .vki-ic{width:2.6rem;height:2.6rem;border-radius:13px;display:grid;place-items:center;background:linear-gradient(150deg,var(--lime),var(--brand));color:var(--brand-deeper,#11331f);font-size:1.3rem;flex:none}
+.vki-head .nm{font-family:"Bricolage Grotesque";font-weight:800;font-size:1.05rem;line-height:1.1}
+.vki-head .rl{font-size:.8rem;color:var(--muted)}
+.vki-row{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem}
+.vki-row label{display:flex;flex-direction:column;gap:.3rem;font-size:.76rem;font-weight:700;color:var(--muted)}
+.vki-row input,.vki-row select{font:inherit;padding:.55rem .6rem;border:1px solid var(--line);border-radius:10px;background:var(--bg,#fff);color:var(--ink);width:100%}
+.vki-result{margin-top:1rem;border-top:1px solid var(--line);padding-top:1rem}
+.vki-score{display:flex;align-items:baseline;gap:.55rem;margin-bottom:.5rem}
+.vki-score b{font-family:"Bricolage Grotesque";font-size:2.3rem;line-height:1;color:var(--ink)}
+.vki-score span{font-weight:800;font-size:.95rem}
+.vki-bar{height:10px;border-radius:99px;background:linear-gradient(90deg,#3b9ae1,#3cb371,#f4c542,#e8833a,#d64545);position:relative;margin:.3rem 0 .85rem}
+.vki-bar i{position:absolute;top:-4px;width:4px;height:18px;border-radius:3px;background:#0d2a1a;box-shadow:0 0 0 2px #fff;transform:translateX(-50%);left:50%;transition:left .45s ease}
+.vki-note{font-size:.85rem;color:var(--ink);line-height:1.45;margin:0 0 .85rem}
+.vki-lead{background:oklch(0.97 0.025 150);border:1px solid var(--line);border-radius:13px;padding:.95rem}
+.vki-lead>p{margin:0 0 .65rem;font-size:.88rem}
+.vki-lead input{width:100%;font:inherit;padding:.55rem .6rem;border:1px solid var(--line);border-radius:10px;margin-bottom:.5rem;background:#fff;color:var(--ink)}
+.vki-kvkk{display:flex;gap:.5rem;font-size:.73rem;color:var(--muted);line-height:1.35;margin:.1rem 0 .7rem;align-items:flex-start}
+.vki-kvkk input{width:auto;margin:.15rem 0 0;flex:none;accent-color:var(--brand)}
+.vki-kvkk a{color:var(--brand);text-decoration:underline}
+.vki-disc{font-size:.72rem;color:var(--muted);margin:.7rem 0 0;text-align:center}
+.vki-field{margin-bottom:.95rem}
+.vki-flabel{display:flex;justify-content:space-between;align-items:center;margin-bottom:.45rem}
+.vki-flabel label{font-size:.8rem;font-weight:700;color:var(--ink)}
+.vki-val{display:flex;align-items:center;gap:.25rem}
+.vki-val input{width:3.4rem;text-align:right;font:inherit;font-weight:800;padding:.28rem .4rem;border:1px solid var(--line);border-radius:8px;background:var(--bg,#fff);color:var(--ink);-moz-appearance:textfield;appearance:textfield}
+.vki-val input::-webkit-outer-spin-button,.vki-val input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.vki-val span{font-size:.78rem;color:var(--muted);font-weight:700}
+.vki-slider{-webkit-appearance:none;appearance:none;width:100%;height:7px;border-radius:99px;background:var(--line);outline:none;cursor:pointer}
+.vki-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:var(--brand);border:3px solid #fff;box-shadow:0 2px 7px rgba(20,60,40,.35);cursor:pointer}
+.vki-slider::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--brand);border:3px solid #fff;box-shadow:0 2px 7px rgba(20,60,40,.35);cursor:pointer}
+.vki-cats{display:grid;grid-template-columns:repeat(5,1fr);gap:.4rem;margin-top:1rem}
+.vki-cat{text-align:center;padding:.55rem .15rem;border:1px solid var(--line);border-radius:11px;background:var(--bg,#fff);opacity:.58;transition:transform .2s,opacity .2s,box-shadow .2s,border-color .2s}
+.vki-cat .d{display:block;width:1.3rem;height:1.3rem;border-radius:50%;margin:0 auto .35rem}
+.vki-cat small{font-size:.6rem;font-weight:800;color:var(--ink);line-height:1.05;display:block}
+.vki-cat.is-on{opacity:1;box-shadow:0 8px 18px -10px rgba(0,0,0,.35);transform:translateY(-2px)}
+</style>
+</head>
+<body data-page="home">
+
+<div class="compliance"><div class="in">
+  <b>Herbalife® Bağımsız Distribütör</b><span class="sep">•</span><span>Abdoul Raouf Savadogo</span>
+  <span class="sep">•</span><span>İstanbul</span><span class="sep">•</span><span>0500 000 00 00</span>
+  <span class="badge"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Orijinal Herbalife ürünleri</span>
+</div></div>
+
+<div class="app">
+  <aside class="sidebar">
+    <a class="sb-brand" href="platform.html">
+      <span class="mark"><svg width="22" height="22" viewBox="5 2 14 14" fill="currentColor" fill-rule="evenodd" aria-hidden="true"><path d="M11.1 9.7 Q6.4 7.8 6 2.9 Q10.4 4.4 11.1 9.7 Z M11.5 9.7 Q11.5 4.6 14.3 2.7 Q15.6 6.4 11.5 9.7 Z M10.1 11 Q14.3 10.1 17.9 13.5 Q13.6 15.1 10.1 11 Z M10.6 9.2 Q8 7.2 6.7 3.5 Q9 6 10.6 9.2 Z M11.9 9.2 Q12 5.1 14 3.3 Q12.7 5.9 11.9 9.2 Z M10.8 11.1 Q14.2 10.8 17 13.2 Q14.2 12.4 10.8 11.1 Z"/></svg></span>
+      <span><span class="nm">Goodsoria</span><br><span class="tag">Herbalife Platformu</span></span>
+    </a>
+    <div class="sb-sect">Keşfet</div>
+    <a class="navlink active" href="platform.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/></svg> Ana Sayfa</a>
+    <a class="navlink" href="magaza.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18l-1.4 11a2 2 0 0 1-2 1.7H6.4a2 2 0 0 1-2-1.7L3 9z"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/></svg> Mağaza</a>
+    <a class="navlink" href="platform.html#bulucu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg> Ürün Bulucu</a>
+    <a class="navlink" href="distributor.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 4 8-8"/><path d="M16 8h4v4"/></svg> Distribütör Ol <span class="pill">Kazanç</span></a>
+    <a class="navlink" href="topluluk.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg> Topluluk</a>
+    <div class="sb-sect">Hesabım</div>
+    <a class="navlink" href="panel.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg> Panelim</a>
+    <a class="navlink" href="panel.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18v12H3z"/><path d="M3 7l9 6 9-6"/></svg> Siparişlerim</a>
+    <a class="navlink" href="panel.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3"/><path d="M2 21v-1a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v1"/><path d="M19 8v6M16 11h6"/></svg> Ekibim</a>
+    <div class="sb-foot">
+      <div class="sb-card">
+        <span class="t"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6z"/></svg> Üye ol, kilidi aç</span>
+        <p>Fiyatlar, kişisel plan, sipariş takibi ve ekip paneli üyelikte açılır.</p>
+        <button class="btn btn-lime btn-sm" data-join>Ücretsiz üye ol</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="content" id="top">
+    <header class="topbar">
+      <button class="icbtn menubtn" id="menuBtn" aria-label="Menü"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <label class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input id="q" type="search" placeholder="Ürün, hedef veya kategori ara…" autocomplete="off"><kbd>/</kbd></label>
+      <div class="tb-actions">
+        <button class="icbtn" aria-label="Bildirimler"><span class="dotbadge"></span><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></button>
+        <button class="icbtn" id="cartBtn" aria-label="Sepet"><span class="cartcount" id="cc">0</span><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg></button>
+        <button class="btn btn-primary btn-sm" data-join>Giriş / Üye ol</button>
+      </div>
+    </header>
+
+    <main>
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-main" data-reveal>
+          <span class="hero-tag"><span class="dot"></span> Tek çatı altında · ürün + kazanç + topluluk</span>
+          <h1>Sağlığını dönüştür,<br><em>kendi işini</em> kur.</h1>
+          <p class="lead">Sana uygun Herbalife ürünleri, kişisel beslenme planı ve istersen kendi kazanç yolculuğun — hepsi tek platformda, tek hesapla.</p>
+          <div class="finder" id="bulucu">
+            <div class="fl"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg> Hedefini seç, planını çıkaralım</div>
+            <div class="goals" id="goals">
+              <button class="goal" data-goal="kilo" aria-pressed="false">⚖️ Kilo vermek</button>
+              <button class="goal" data-goal="kas" aria-pressed="false">💪 Kas & sporcu</button>
+              <button class="goal" data-goal="enerji" aria-pressed="false">⚡ Enerji</button>
+              <button class="goal" data-goal="sindirim" aria-pressed="false">🌿 Hafiflik</button>
+            </div>
+            <div class="go"><button class="btn btn-lime" id="findBtn">Bana uygun ürünleri bul →</button></div>
+          </div>
+          <div class="hero-stats">
+            <div class="s"><b>40+</b><span>Ürün çeşidi</span></div>
+            <div class="s"><b>1.200+</b><span>Mutlu müşteri</span></div>
+            <div class="s"><b>%100</b><span>Orijinal ürün</span></div>
+          </div>
+        </div>
+        <aside class="vki" id="vki" data-reveal>
+          <div class="vki-head"><span class="vki-ic">⚖️</span><span><span class="nm">Ücretsiz VKİ Aracı</span><br><span class="rl">30 saniyede sağlık fotoğrafın</span></span></div>
+          <form id="vkiForm" novalidate>
+            <div class="vki-field">
+              <div class="vki-flabel"><label for="vki-boy">Boyunuz</label><div class="vki-val"><input id="vki-boy" type="number" inputmode="numeric" min="120" max="220" value="170"><span>cm</span></div></div>
+              <input id="vki-boy-s" class="vki-slider" type="range" min="120" max="220" value="170" aria-label="Boy">
+            </div>
+            <div class="vki-field">
+              <div class="vki-flabel"><label for="vki-kilo">Kilonuz</label><div class="vki-val"><input id="vki-kilo" type="number" inputmode="numeric" min="30" max="200" value="72"><span>kg</span></div></div>
+              <input id="vki-kilo-s" class="vki-slider" type="range" min="30" max="200" value="72" aria-label="Kilo">
+            </div>
+            <div class="vki-row">
+              <label>Yaş<input id="vki-yas" type="number" inputmode="numeric" min="15" max="99" value="30"></label>
+              <label>Cinsiyet<select id="vki-cins"><option value="k">Kadın</option><option value="e">Erkek</option></select></label>
+            </div>
+            <button class="btn btn-lime btn-block" type="submit">VKİ'mi Hesapla →</button>
+          </form>
+          <div class="vki-cats" id="vkiCats">
+            <div class="vki-cat" data-cat="Zayıf"><span class="d" style="background:#3b9ae1"></span><small>Zayıf</small></div>
+            <div class="vki-cat" data-cat="Sağlıklı"><span class="d" style="background:#2e9d5b"></span><small>Sağlıklı</small></div>
+            <div class="vki-cat" data-cat="Fazla Kilolu"><span class="d" style="background:#d9a316"></span><small>Fazla Kilolu</small></div>
+            <div class="vki-cat" data-cat="Obez"><span class="d" style="background:#e8833a"></span><small>Obez</small></div>
+            <div class="vki-cat" data-cat="Aşırı Obez"><span class="d" style="background:#d64545"></span><small>Aşırı Obez</small></div>
+          </div>
+          <div class="vki-result" id="vkiResult" hidden>
+            <div class="vki-score"><b id="vki-num">—</b><span id="vki-cat">—</span></div>
+            <p class="vki-note" id="vki-msg"></p>
+            <div class="vki-lead" id="vkiLead">
+              <p><b>Sana özel ürün önerisi + beslenme planını gönderelim.</b></p>
+              <input id="lead-ad" type="text" placeholder="Ad Soyad" autocomplete="name">
+              <input id="lead-mail" type="email" placeholder="E-posta" autocomplete="email">
+              <input id="lead-tel" type="tel" placeholder="Telefon / WhatsApp" autocomplete="tel">
+              <label class="vki-kvkk"><input type="checkbox" id="lead-kvkk"><span>İletişim bilgilerimin bana özel öneri ve plan iletilmesi amacıyla işlenmesini ve tarafıma ulaşılmasını kabul ediyorum. <a href="#">KVKK Aydınlatma Metni</a>.</span></label>
+              <button class="btn btn-primary btn-block" id="leadBtn" type="button">Planımı gönder</button>
+            </div>
+            <p class="vki-disc">Bu araç yalnızca bilgilendirme amaçlıdır; tıbbi tavsiye veya teşhis yerine geçmez.</p>
+          </div>
+        </aside>
+      </section>
+
+      <!-- CATEGORY RAIL -->
+      <section>
+        <div class="sec-head"><div><span class="eye">Keşfet</span><h2 style="margin-top:.5rem">İhtiyacına göre kategoriler</h2><p class="sub">Hedefine uygun ürün grubunu seç, mağazada incele.</p></div><a class="btn btn-ghost btn-sm" href="magaza.html">Tüm mağaza →</a></div>
+        <div class="rail">
+          <a class="catcard" href="magaza.html"><img src="https://images.unsplash.com/photo-1654084767590-a38c7f0f5bd3?auto=format&fit=crop&w=400&q=70" alt="Kilo kontrolü"><div class="cc"><h3>Kilo Kontrolü</h3><small>Shake & öğün</small><div class="go">Keşfet →</div></div></a>
+          <a class="catcard" href="magaza.html"><img src="https://images.unsplash.com/photo-1622484212022-983850e48832?auto=format&fit=crop&w=400&q=70" alt="Sporcu"><div class="cc"><h3>Sporcu</h3><small>Protein & güç</small><div class="go">Keşfet →</div></div></a>
+          <a class="catcard" href="magaza.html"><img src="https://images.unsplash.com/photo-1514994960127-ed3ef9239d11?auto=format&fit=crop&w=400&q=70" alt="Günlük beslenme"><div class="cc"><h3>Günlük Beslenme</h3><small>Çay & vitamin</small><div class="go">Keşfet →</div></div></a>
+          <a class="catcard" href="magaza.html"><img src="https://images.unsplash.com/photo-1615182786737-16b4caf5580a?auto=format&fit=crop&w=400&q=70" alt="İçecekler"><div class="cc"><h3>Çay & İçecek</h3><small>Aloe & ferahlık</small><div class="go">Keşfet →</div></div></a>
+          <a class="catcard" href="magaza.html"><img src="https://images.unsplash.com/photo-1543364195-bfe6e4932397?auto=format&fit=crop&w=400&q=70" alt="Setler"><div class="cc"><h3>Başlangıç Setleri</h3><small>Program paketleri</small><div class="go">Keşfet →</div></div></a>
+        </div>
+      </section>
+
+      <!-- FEATURED STORE -->
+      <section id="magaza">
+        <div class="sec-head"><div><span class="eye">Mağaza</span><h2 style="margin-top:.5rem">Öne çıkan ürünler</h2><p class="sub" id="rlabel">Öne çıkan ürünler ve fiyatları.</p></div><a class="btn btn-ghost btn-sm" href="magaza.html">Tüm ürünler →</a></div>
+        <div class="chips" id="chips" style="margin-bottom:1.2rem">
+          <button class="chip" data-cat="all" aria-pressed="true">Tümü</button>
+          <button class="chip" data-cat="kilo" aria-pressed="false">Kilo Kontrolü</button>
+          <button class="chip" data-cat="sporcu" aria-pressed="false">Sporcu</button>
+          <button class="chip" data-cat="gunluk" aria-pressed="false">Günlük Beslenme</button>
+        </div>
+        <div class="pgrid" id="grid">
+          <article class="pcard" data-cat="kilo" data-goals="kilo enerji" data-name="formül 1 besleyici shake"><span class="match-rib">✦ Sana uygun</span><div class="picwrap"><img class="pic" src="https://images.unsplash.com/photo-1654084767590-a38c7f0f5bd3?auto=format&fit=crop&w=600&q=80" alt="Yeşil besleyici shake"><button class="fav" aria-label="Favori"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21C5 14 3 11 3 7.5A4.5 4.5 0 0 1 12 6a4.5 4.5 0 0 1 9 1.5C21 11 19 14 12 21z"/></svg></button></div><div class="body"><span class="cat">Kilo Kontrolü</span><h3>Formül 1 Besleyici Shake</h3><p>Dengeli bir öğün yerine geçen, protein ve bitki besinli içecek tozu.</p><div class="stars">★★★★★ <b>4.9</b> <span>(214)</span></div><div class="row"><span class="lockprice"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Fiyat üyelikte</span><button class="btn btn-primary btn-sm add">Sepete ekle</button></div></div></article>
+          <article class="pcard" data-cat="sporcu" data-goals="kas" data-name="saf protein tozu"><span class="match-rib">✦ Sana uygun</span><div class="picwrap"><img class="pic" src="https://images.unsplash.com/photo-1622484212022-983850e48832?auto=format&fit=crop&w=600&q=80" alt="Protein içeceği"><button class="fav" aria-label="Favori"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21C5 14 3 11 3 7.5A4.5 4.5 0 0 1 12 6a4.5 4.5 0 0 1 9 1.5C21 11 19 14 12 21z"/></svg></button></div><div class="body"><span class="cat">Sporcu</span><h3>Saf Protein Tozu</h3><p>Antrenman sonrası toparlanma ve kas desteği için yüksek protein.</p><div class="stars">★★★★★ <b>4.8</b> <span>(167)</span></div><div class="row"><span class="lockprice"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Fiyat üyelikte</span><button class="btn btn-primary btn-sm add">Sepete ekle</button></div></div></article>
+          <article class="pcard" data-cat="gunluk" data-goals="enerji kilo" data-name="bitki bazlı çay içeceği"><span class="match-rib">✦ Sana uygun</span><div class="picwrap"><img class="pic" src="https://images.unsplash.com/photo-1514994960127-ed3ef9239d11?auto=format&fit=crop&w=600&q=80" alt="Meyveli içecek"><button class="fav" aria-label="Favori"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21C5 14 3 11 3 7.5A4.5 4.5 0 0 1 12 6a4.5 4.5 0 0 1 9 1.5C21 11 19 14 12 21z"/></svg></button></div><div class="body"><span class="cat">Günlük Beslenme</span><h3>Bitki Bazlı Çay İçeceği</h3><p>Gün boyu canlılık için ferahlatıcı, hafif bitki çayı karışımı.</p><div class="stars">★★★★★ <b>4.9</b> <span>(341)</span></div><div class="row"><span class="lockprice"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Fiyat üyelikte</span><button class="btn btn-primary btn-sm add">Sepete ekle</button></div></div></article>
+          <article class="pcard" data-cat="gunluk" data-goals="sindirim" data-name="aloe konsantre içecek"><span class="match-rib">✦ Sana uygun</span><div class="picwrap"><img class="pic" src="https://images.unsplash.com/photo-1615182786737-16b4caf5580a?auto=format&fit=crop&w=600&q=80" alt="Yeşil şişe"><button class="fav" aria-label="Favori"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21C5 14 3 11 3 7.5A4.5 4.5 0 0 1 12 6a4.5 4.5 0 0 1 9 1.5C21 11 19 14 12 21z"/></svg></button></div><div class="body"><span class="cat">Günlük Beslenme</span><h3>Aloe Konsantre İçecek</h3><p>Su tüketimini keyifli hale getiren, hafif aloe veralı konsantre.</p><div class="stars">★★★★☆ <b>4.7</b> <span>(98)</span></div><div class="row"><span class="lockprice"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Fiyat üyelikte</span><button class="btn btn-primary btn-sm add">Sepete ekle</button></div></div></article>
+          <article class="pcard" data-cat="sporcu" data-goals="kas enerji" data-name="protein bar"><span class="match-rib">✦ Sana uygun</span><div class="picwrap"><img class="pic" src="https://images.unsplash.com/photo-1511909525232-61113c912358?auto=format&fit=crop&w=600&q=80" alt="Meyve kâsesi"><button class="fav" aria-label="Favori"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21C5 14 3 11 3 7.5A4.5 4.5 0 0 1 12 6a4.5 4.5 0 0 1 9 1.5C21 11 19 14 12 21z"/></svg></button></div><div class="body"><span class="cat">Sporcu</span><h3>Protein Bar</h3><p>Yanında taşı, tok kal: pratik ve lezzetli protein atıştırması.</p><div class="stars">★★★★★ <b>4.8</b> <span>(122)</span></div><div class="row"><span class="lockprice"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Fiyat üyelikte</span><button class="btn btn-primary btn-sm add">Sepete ekle</button></div></div></article>
+          <article class="pcard" data-cat="gunluk" data-goals="enerji sindirim" data-name="günlük multivitamin"><span class="match-rib">✦ Sana uygun</span><div class="picwrap"><img class="pic" src="https://images.unsplash.com/photo-1543364195-bfe6e4932397?auto=format&fit=crop&w=600&q=80" alt="Taze sebzeler"><button class="fav" aria-label="Favori"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21C5 14 3 11 3 7.5A4.5 4.5 0 0 1 12 6a4.5 4.5 0 0 1 9 1.5C21 11 19 14 12 21z"/></svg></button></div><div class="body"><span class="cat">Günlük Beslenme</span><h3>Günlük Multivitamin</h3><p>Yoğun günlerde temel vitamin ve mineral desteği.</p><div class="stars">★★★★★ <b>4.9</b> <span>(203)</span></div><div class="row"><span class="lockprice"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Fiyat üyelikte</span><button class="btn btn-primary btn-sm add">Sepete ekle</button></div></div></article>
+        </div>
+        <p class="empty" id="empty" hidden>Bu kritere uygun ürün bulunamadı. Filtreleri temizleyip tekrar dene.</p>
+      </section>
+
+      <!-- TWO PATHS -->
+      <section>
+        <div class="sec-head"><div><span class="eye">İki yol, tek platform</span><h2 style="margin-top:.5rem">Sen hangisisin?</h2></div></div>
+        <div class="paths">
+          <a class="path buy" data-join data-reveal><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18l-1.4 11a2 2 0 0 1-2 1.7H6.4a2 2 0 0 1-2-1.7L3 9z"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/></svg></span><h3>Ürün almak istiyorum</h3><p>Hedefine uygun ürünleri keşfet, üye ol, fiyatları gör ve kapına kadar sipariş et.</p><span class="go">Ücretsiz üye ol →</span><span class="num">01</span></a>
+          <a class="path earn" href="distributor.html" data-reveal><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 4 8-8"/><path d="M16 8h4v4"/></svg></span><h3>Para kazanmak istiyorum</h3><p>Ekibime katıl, kendi işini kur. Hazır eğitim, sistem ve toplulukla President yoluna çık.</p><span class="go">Distribütörlüğü keşfet →</span><span class="num">02</span></a>
+        </div>
+      </section>
+
+      <!-- RANK -->
+      <section id="kazan">
+        <div class="rank" data-reveal><div class="rkin">
+          <span class="eye" style="background:oklch(1 0 0/.12);color:var(--lime)">Kazanç yolculuğu</span>
+          <h2 style="margin-top:.6rem">Distribütörlükte zirveye: <span style="color:var(--lime)">President Team</span></h2>
+          <p class="lead">Herbalife kariyer planında her seviye yeni bir basamak. Goodsoria seni adım adım taşır: eğitim akademisi, hazır pazarlama kiti ve mentorluk desteğiyle.</p>
+          <div class="ladder">
+            <div class="rung"><span class="lv">SEVİYE 1</span><div class="nm">Distribütör</div></div>
+            <div class="rung"><span class="lv">SEVİYE 2</span><div class="nm">Süpervizör</div></div>
+            <div class="rung"><span class="lv">SEVİYE 3</span><div class="nm">World Team</div></div>
+            <div class="rung"><span class="lv">SEVİYE 4</span><div class="nm">GET Team</div></div>
+            <div class="rung is-pres"><span class="crown"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3 7l4 4 5-6 5 6 4-4v11H3z"/></svg></span><span class="lv">ZİRVE</span><div class="nm">President</div></div>
+          </div>
+          <div class="rank-prog"><div class="t"><span>👑 Örnek yolculuk · Süpervizör basamağı</span><span>President'e %38</span></div><div class="bar"><i data-fill="62"></i></div></div>
+          <div class="rank-cta"><a class="btn btn-lime" href="distributor.html">Distribütör başvurusu</a><a class="btn btn-ondark" href="magaza.html">Önce ürünlere bak</a></div>
+          <p class="fine">Kazanç kişiden kişiye değişir; hiçbir gelir garantisi verilmez. Seviyeler örnek amaçlıdır. <a href="#">Ortalama Kazanç Beyanı</a>.</p>
+        </div></div>
+      </section>
+
+      <!-- COMMUNITY -->
+      <section id="topluluk">
+        <div class="sec-head"><div><span class="eye">Topluluk</span><h2 style="margin-top:.5rem">Yalnız değilsin</h2><p class="sub">Tarifler, ipuçları, canlı yayınlar ve birbirini destekleyen bir grup.</p></div><a class="btn btn-ghost btn-sm" href="topluluk.html">Topluluğa git →</a></div>
+        <div class="comm">
+          <div class="chan wa" data-reveal><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.8.7.8-2.7-.2-.3A8 8 0 1 1 12 20zm4.4-5.9c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1-.2.2-.6.8-.7.9-.1.2-.3.2-.5.1-.2-.1-1-.4-1.9-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.3.1-.4l.4-.4c.1-.1.1-.2.2-.4 0-.1 0-.3 0-.4l-.7-1.7c-.2-.4-.4-.4-.5-.4h-.5c-.2 0-.4 0-.6.3-.2.2-.8.8-.8 1.9s.8 2.2.9 2.4c.1.2 1.6 2.5 3.9 3.4 1.8.7 2.2.6 2.6.5.5-.1 1.4-.6 1.6-1.1.2-.5.2-1 .1-1.1-.1-.1-.2-.1-.4-.2z"/></svg></span><div><h3>WhatsApp grubu</h3><p>Günlük motivasyon, hızlı sorular ve birebir destek.</p></div><span class="meta">🟢 850+ üye · her gün aktif</span><a href="topluluk.html">Gruba katıl</a></div>
+          <div class="chan tg" data-reveal><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M22 3 2 11l6 2 2 7 3-4 5 4 4-17zM9.5 13.5 17 8l-6 6.5-.2 3z"/></svg></span><div><h3>Telegram kanalı</h3><p>Tarifler, ürün rehberleri ve haftalık canlı yayın.</p></div><span class="meta">📢 1.300+ abone · haftalık yayın</span><a href="topluluk.html">Kanala katıl</a></div>
+        </div>
+      </section>
+
+      <!-- TRUST -->
+      <section>
+        <div class="trust" data-reveal>
+          <div class="ti"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/></svg></span><span><b>Bağımsız distribütör</b><small>Orijinal Herbalife ürünleri</small></span></div>
+          <div class="ti"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9"/><path d="M3 4v5h5"/></svg></span><span><b>12 ay iade güvencesi</b><small>Memnun kalmazsan koşulsuz</small></span></div>
+          <div class="ti"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><span><b>KVKK uyumlu</b><small>Verilerin güvende, şeffaf</small></span></div>
+          <div class="ti"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span><span><b>Türkiye geneli</b><small>Hızlı kargo, yerel destek</small></span></div>
+        </div>
+      </section>
+    </main>
+
+    <footer><div class="fin">
+      <div class="foot-top">
+        <div><div class="foot-brand">Goodsoria</div><p style="margin-top:.7rem;color:oklch(0.8 0.03 140);max-width:38ch">Herbalife ürün mağazası, kişisel ürün bulucu, distribütörlük kazanç yolculuğu ve topluluk — tek platformda.</p></div>
+        <div><h4>Platform</h4><a href="magaza.html">Mağaza</a><a href="platform.html#bulucu">Ürün Bulucu</a><a href="distributor.html">Distribütör Ol</a><a href="topluluk.html">Topluluk</a></div>
+        <div><h4>Hesap</h4><a href="#" data-join>Üye ol</a><a href="#" data-join>Giriş yap</a><a href="panel.html">Panelim</a><a href="sepet.html">Sepetim</a></div>
+        <div><h4>Bilgi</h4><a href="#">Ortalama Kazanç Beyanı</a><a href="#">KVKK & Gizlilik</a><a href="#">İletişim</a><a href="https://www.herbalife.com/tr-tr" target="_blank" rel="noopener">Resmî Herbalife sitesi</a></div>
+      </div>
+      <div class="foot-legal">
+        <p>Bu internet sitesi bir <b>Herbalife Bağımsız Distribütörü</b> (Abdoul Raouf Savadogo · İstanbul · 0500 000 00 00) tarafından işletilmektedir ve Herbalife'ın resmî sitesi değildir. Kendi Distribütör hesabınız üzerinden sipariş vermek için lütfen myherbalife.com adresini ziyaret edin.</p>
+        <p style="margin-top:.6rem"><b>Kilo yönetimi & sağlık bildirimi:</b> Sonuçlar kişiden kişiye değişir; dengeli beslenme ve düzenli fiziksel aktiviteyle birlikte değerlendirilmelidir. Bu içerikler tıbbi tavsiye niteliği taşımaz.</p>
+        <p style="margin-top:.6rem">© 2026 Goodsoria. Herbalife ve ürün adları, Herbalife International, Inc.'in ticari markalarıdır.</p>
+      </div>
+    </div></footer>
+  </div>
+</div>
+
+<nav class="botnav">
+  <a href="platform.html" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/></svg>Ana</a>
+  <a href="magaza.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18l-1.4 11a2 2 0 0 1-2 1.7H6.4a2 2 0 0 1-2-1.7L3 9z"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/></svg>Mağaza</a>
+  <a href="distributor.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 4 8-8"/><path d="M16 8h4v4"/></svg>Kazan</a>
+  <a href="topluluk.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Topluluk</a>
+  <a href="panel.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 12 0v1"/></svg>Panel</a>
+</nav>
+
+<div class="drawer" id="drawer"><div class="scrim" data-dclose></div><div class="panel">
+  <a class="sb-brand" href="platform.html"><span class="mark"><svg width="22" height="22" viewBox="5 2 14 14" fill="currentColor" fill-rule="evenodd" aria-hidden="true"><path d="M11.1 9.7 Q6.4 7.8 6 2.9 Q10.4 4.4 11.1 9.7 Z M11.5 9.7 Q11.5 4.6 14.3 2.7 Q15.6 6.4 11.5 9.7 Z M10.1 11 Q14.3 10.1 17.9 13.5 Q13.6 15.1 10.1 11 Z M10.6 9.2 Q8 7.2 6.7 3.5 Q9 6 10.6 9.2 Z M11.9 9.2 Q12 5.1 14 3.3 Q12.7 5.9 11.9 9.2 Z M10.8 11.1 Q14.2 10.8 17 13.2 Q14.2 12.4 10.8 11.1 Z"/></svg></span><span><span class="nm">Goodsoria</span><br><span class="tag">Herbalife Platformu</span></span></a>
+  <a class="navlink" href="magaza.html">Mağaza</a><a class="navlink" href="platform.html#bulucu">Ürün Bulucu</a><a class="navlink" href="distributor.html">Distribütör Ol</a><a class="navlink" href="topluluk.html">Topluluk</a><a class="navlink" href="panel.html">Panelim</a>
+  <div class="sb-foot"><div class="sb-card"><span class="t">Üye ol, kilidi aç</span><p>Fiyatlar, kişisel plan ve ekip paneli.</p><button class="btn btn-lime btn-sm" data-join>Ücretsiz üye ol</button></div></div>
+</div></div>
+
+<div class="modal" id="entry" role="dialog" aria-modal="true" aria-labelledby="entry-t"><div class="scrim" data-close></div><div class="panel">
+  <div class="lg"><span class="m"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c5-3.5 8-7 8-11a8 8 0 0 0-16 0c0 4 3 7.5 8 11z"/></svg></span> Herbalife Bağımsız Distribütör</div>
+  <h3 id="entry-t">Hoş geldiniz 👋</h3>
+  <p>Bu platform, bağımsız bir Herbalife Distribütörü olan <b>Abdoul Raouf Savadogo</b> tarafından işletilmektedir. Herbalife'ın resmî kurumsal sitesi değildir. Ürünleri ve fiyatları inceleyebilir; üye olarak kişisel plan ve sipariş takibini açabilirsin.</p>
+  <div class="acts"><button class="btn btn-primary" data-close>Platforma gir</button><a class="btn btn-ghost" href="https://www.herbalife.com/tr-tr" target="_blank" rel="noopener">Resmî site</a></div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script src="assets/diri.js"></script>
+<script>
+/* home: featured store filter + finder */
+const cards=$$('.pcard'), rlabel=$('#rlabel'), empty=$('#empty');
+let state={cat:'all',goal:null,q:''};
+const GOAL_LABEL={kilo:'Kilo vermek',kas:'Kas & sporcu',enerji:'Enerji',sindirim:'Hafiflik'};
+function render(){
+  let shown=0;
+  cards.forEach(c=>{
+    const okCat=state.cat==='all'||c.dataset.cat===state.cat;
+    const okQ=!state.q||c.dataset.name.includes(state.q);
+    const vis=okCat&&okQ; c.style.display=vis?'':'none'; if(vis)shown++;
+    const isMatch=state.goal&&c.dataset.goals.split(' ').includes(state.goal);
+    c.classList.toggle('match',!!isMatch); c.style.order=isMatch?'-1':'0';
+  });
+  if(empty)empty.hidden=shown>0;
+  if(!rlabel)return;
+  if(state.goal) rlabel.innerHTML='<b style="color:var(--brand)">'+GOAL_LABEL[state.goal]+'</b> için önerilenler en üstte';
+  else if(state.cat!=='all'){const t={kilo:'Kilo Kontrolü',sporcu:'Sporcu',gunluk:'Günlük Beslenme'}[state.cat];rlabel.innerHTML='<b>'+t+'</b> kategorisi';}
+  else rlabel.textContent='Öne çıkan ürünler ve fiyatları.';
+}
+function setCat(cat){state.cat=cat;$$('#chips .chip').forEach(x=>x.setAttribute('aria-pressed',x.dataset.cat===cat?'true':'false'));render();}
+$$('#chips .chip').forEach(b=>b.addEventListener('click',()=>{state.goal=null;clearGoals();setCat(b.dataset.cat);}));
+const _q=$('#q'); if(_q)_q.addEventListener('input',e=>{state.q=e.target.value.trim().toLowerCase();render();});
+function clearGoals(){$$('#goals .goal').forEach(g=>g.setAttribute('aria-pressed','false'));}
+$$('#goals .goal').forEach(g=>g.addEventListener('click',()=>{const on=g.getAttribute('aria-pressed')==='true';clearGoals();if(on){state.goal=null;}else{g.setAttribute('aria-pressed','true');state.goal=g.dataset.goal;}render();}));
+const _fb=$('#findBtn'); if(_fb)_fb.addEventListener('click',()=>{if(!state.goal){toast('Önce bir hedef seç');return;}setCat('all');render();document.getElementById('magaza').scrollIntoView({behavior:'smooth'});toast('Hedefine uygun ürünler en üstte ✦');});
+render();
+
+/* ---- VKİ (BMI) aracı + lead (İYS'siz güvenli: yalnız toplar, göndermez) ---- */
+(function(){
+  const form=$('#vkiForm'); if(!form)return;
+  const res=$('#vkiResult');
+  /* slider ↔ input senkron + dolan çubuk */
+  function bindSlider(numId,slId){
+    const n=$('#'+numId), s=$('#'+slId); if(!n||!s)return;
+    const min=+s.min,max=+s.max;
+    const fill=()=>{let v=Math.max(min,Math.min(max,+s.value||min));const p=((v-min)/(max-min))*100;s.style.background='linear-gradient(to right,var(--brand) '+p+'%,var(--line) '+p+'%)';};
+    s.addEventListener('input',()=>{n.value=s.value;fill();});
+    n.addEventListener('input',()=>{let v=+n.value||min;if(v>max)v=max;if(v<min)v=min;s.value=v;fill();});
+    fill();
+  }
+  bindSlider('vki-boy','vki-boy-s');
+  bindSlider('vki-kilo','vki-kilo-s');
+  const cats=[
+    {max:18.5,name:'Zayıf',color:'#3b9ae1',msg:'VKİ değerin düşük. Yeterli ve dengeli beslenmek önemli; sağlıklı kütleye destek için ürünlerimize göz atabilirsin.'},
+    {max:25,name:'Sağlıklı',color:'#2e9d5b',msg:'Harika — sağlıklı aralıktasın! Formunu korumak için dengeli beslenme ve uygun ürün desteğine bakabilirsin.'},
+    {max:30,name:'Fazla Kilolu',color:'#d9a316',msg:'Kilo hedefin varsa; dengeli beslenme ve düzenli aktiviteyle birlikte Formül 1 gibi öğün desteği ürünlerine bakabilirsin.'},
+    {max:35,name:'Obez',color:'#e8833a',msg:'Kilo yönetimi hedefliyorsan, dengeli beslenme + aktivite ile birlikte sana uygun bir program kurabiliriz. (Tıbbi tavsiye değildir.)'},
+    {max:999,name:'Aşırı Obez',color:'#d64545',msg:'Sağlıklı kiloya kademeli ulaşmak için kişiye özel bir plan önemli. Dilersen sana uygun bir başlangıç önerelim. (Tıbbi tavsiye değildir.)'}
+  ];
+  form.addEventListener('submit',e=>{
+    e.preventDefault();
+    const boy=+$('#vki-boy').value, kilo=+$('#vki-kilo').value;
+    if(!boy||!kilo||boy<100||boy>250||kilo<25||kilo>300){toast('Lütfen geçerli boy ve kilo gir');return;}
+    const m=boy/100, bmi=kilo/(m*m);
+    const c=cats.find(x=>bmi<x.max)||cats[cats.length-1];
+    $('#vki-num').textContent=bmi.toFixed(1);
+    const cat=$('#vki-cat'); cat.textContent=c.name; cat.style.color=c.color;
+    $('#vki-msg').textContent=c.msg;
+    $$('#vkiCats .vki-cat').forEach(b=>{b.classList.remove('is-on');b.style.background='';b.style.borderColor='';});
+    const ab=$('#vkiCats .vki-cat[data-cat="'+c.name+'"]');
+    if(ab){ab.classList.add('is-on');ab.style.background=c.color+'1a';ab.style.borderColor=c.color;}
+    res.hidden=false;
+    res.scrollIntoView({behavior:'smooth',block:'nearest'});
+  });
+  const lb=$('#leadBtn');
+  if(lb)lb.addEventListener('click',()=>{
+    const ad=$('#lead-ad').value.trim(), mail=$('#lead-mail').value.trim(), tel=$('#lead-tel').value.trim();
+    if(!ad||(!mail&&!tel)){toast('Ad ve en az bir iletişim (e-posta veya telefon) gerekli');return;}
+    if(!$('#lead-kvkk').checked){toast('Devam için KVKK onayı gerekli');return;}
+    try{const ls=JSON.parse(localStorage.getItem('goodsoria_leads')||'[]');ls.push({ad,mail,tel,bmi:$('#vki-num').textContent,cat:$('#vki-cat').textContent});localStorage.setItem('goodsoria_leads',JSON.stringify(ls));}catch(e){}
+    $('#vkiLead').innerHTML='<p style="margin:0"><b>Teşekkürler '+(ad.split(' ')[0]||'')+'! ✓</b><br>Sana özel önerini en kısa sürede ileteceğiz.</p>';
+    toast('Bilgilerin alındı ✓ (demo)');
+  });
+})();
+
+/* featured kartlarda açık fiyat (PRICE_PUBLIC ile aynı kaynak) */
+(function(){
+  if(!window.PRICE_PUBLIC)return;
+  const P={'formül 1 besleyici shake':1290,'saf protein tozu':1150,'bitki bazlı çay içeceği':1490,'aloe konsantre içecek':980,'protein bar':540,'günlük multivitamin':690};
+  $$('#grid .pcard').forEach(c=>{
+    const lp=c.querySelector('.lockprice'); if(!lp)return;
+    const pr=P[c.dataset.name];
+    if(pr)lp.outerHTML='<span class="price" style="font-weight:800;font-size:1.06rem;color:var(--ink)">'+pr.toLocaleString('tr-TR')+' ₺</span>';
+  });
+})();
+</script>
+</body>
+</html>

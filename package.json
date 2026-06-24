@@ -1,0 +1,17 @@
+{
+  "name": "goodsoria",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Goodsoria — Herbalife bağımsız distribütör platformu (auth backend + statik site)",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.14.0",
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2"
+  }
+}
