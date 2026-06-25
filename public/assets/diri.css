@@ -364,6 +364,38 @@ main{padding:clamp(18px,2.4vw,30px) clamp(16px,3vw,34px) 3rem;display:flex;flex-
 .ostatus.yolda{background:oklch(0.95 0.06 230);color:oklch(0.45 0.12 240)}
 .ostatus.hazir{background:var(--gold-soft);color:var(--gold-ink)}
 .ostatus.teslim{background:oklch(0.93 0.08 150);color:var(--lime-ink)}
+.ostatus.yeni{background:oklch(0.93 0.04 255);color:oklch(0.44 0.12 258)}
+.ostatus.iptal{background:oklch(0.93 0.06 25);color:oklch(0.5 0.17 25)}
+
+/* sipariş takibi v2 — açılır kart + durum çizelgesi (stepper) + detay */
+.ocard{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;transition:border-color .15s}
+.ocard.open{border-color:var(--brand)}
+.ohead{display:flex;align-items:center;gap:.9rem;width:100%;padding:.7rem;background:var(--surface);border:0;cursor:pointer;text-align:left;font:inherit;color:inherit}
+.ohead:hover{background:var(--bg)}
+.ohead .oi{flex:1;min-width:0}
+.ohead .oi b{font-weight:800;font-size:.95rem;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ohead .oi small{color:var(--muted);font-size:.82rem}
+.ochev{color:var(--muted);transition:transform .2s;flex:none;font-size:.8rem}
+.ocard.open .ochev{transform:rotate(180deg)}
+.ostep{display:flex;align-items:flex-start;padding:.25rem .8rem .75rem}
+.ostep .step{flex:1;display:flex;flex-direction:column;align-items:center;gap:.32rem;position:relative}
+.ostep .step::before{content:'';position:absolute;top:6px;left:-50%;width:100%;height:2px;background:var(--line)}
+.ostep .step:first-child::before{display:none}
+.ostep .step.done::before{background:var(--brand)}
+.ostep .dot{width:14px;height:14px;border-radius:50%;background:var(--surface);border:2px solid var(--line);z-index:1}
+.ostep .step.done .dot{background:var(--brand);border-color:var(--brand)}
+.ostep .step.cur .dot{background:var(--lime);border-color:var(--brand)}
+.ostep .sl{font-size:.66rem;color:var(--muted);text-align:center;line-height:1.12}
+.ostep .step.done .sl{color:var(--ink);font-weight:700}
+.ocancel{padding:.1rem .9rem .75rem;color:oklch(0.55 0.17 25);font-size:.82rem;font-weight:600}
+.odetail{padding:.3rem .85rem .85rem;border-top:1px dashed var(--line)}
+.oitems{list-style:none;margin:.55rem 0 0;padding:0;display:flex;flex-direction:column;gap:.34rem}
+.oitems li{display:flex;justify-content:space-between;gap:1rem;font-size:.85rem}
+.oitems li b{color:var(--brand);white-space:nowrap}
+.ometa{display:flex;flex-direction:column;gap:.35rem;margin-top:.55rem;padding-top:.55rem;border-top:1px solid var(--line)}
+.ometa>div{display:flex;justify-content:space-between;gap:1rem;font-size:.82rem}
+.ometa span{color:var(--muted)}
+.ometa b{font-weight:700;text-align:right}
 .goalring{display:flex;align-items:center;gap:1.1rem}
 .ring{--p:64;width:92px;height:92px;border-radius:50%;flex:none;display:grid;place-items:center;
   background:conic-gradient(var(--brand) calc(var(--p)*1%), oklch(0.92 0.02 160) 0)}

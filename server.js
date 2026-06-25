@@ -279,7 +279,7 @@ app.get('/api/auth/me', async (req, res) => {
 
 app.get('/api/orders', requireAuth, async (req, res) => {
   const r = await db.execute({ sql: 'SELECT * FROM orders WHERE user_id = ? ORDER BY id DESC', args: [req.user.id] });
-  const orders = r.rows.map(o => ({ id: o.id, ono: o.ono, items: JSON.parse(o.items || '[]'), total: o.total, status: o.status, created_at: o.created_at }));
+  const orders = r.rows.map(o => ({ id: o.id, ono: o.ono, items: JSON.parse(o.items || '[]'), total: o.total, status: o.status, created_at: o.created_at, payment_method: o.payment_method || 'kapida', address: o.address || '', phone: o.phone || '' }));
   res.json({ orders });
 });
 
