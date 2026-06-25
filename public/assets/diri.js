@@ -155,6 +155,7 @@ async function doAuth(){
     document.body.classList.remove('locked');
     renderSidebar();renderDrawer();renderBotnav();bindShell();
     toast(_signupMode?'Hesabın oluşturuldu ✓':'Giriş yapıldı ✓');
+    loadFavs(); mergeCartOnLogin();
     if(_authCb){const cb=_authCb;_authCb=null;cb();}
   }catch(ex){
     if(err){err.textContent=ex.message||'İşlem başarısız oldu.';err.style.display='block';}
@@ -219,12 +220,12 @@ function guardPage(){
 }
 
 /* ---------- render shell + behaviors (önce gerçek oturumu çek) ---------- */
-window.authReady=(async function init(){ await fetchMe(); renderSidebar();renderDrawer();renderBotnav();bindShell();guardPage(); loadFavs(); return _user; })();
+window.authReady=(async function init(){ await fetchMe(); renderSidebar();renderDrawer();renderBotnav();bindShell();guardPage(); loadFavs(); loadCartFromServer(); return _user; })();
 
 /* ---------- SEPET (cart, localStorage) — KAYITSIZ satın alma ---------- */
 const CART_KEY='goodsoria_cart';
 function getCart(){try{return JSON.parse(localStorage.getItem(CART_KEY)||'[]')}catch(e){return[]}}
-function saveCart(c){try{localStorage.setItem(CART_KEY,JSON.stringify(c))}catch(e){}updateCartCount();}
+function saveCart(c){try{localStorage.setItem(CART_KEY,JSON.stringify(c))}catch(e){}updateCartCount();pushCartToServer();}
 function cartCount(){return getCart().reduce((s,i)=>s+(i.qty||0),0);}
 function updateCartCount(){const n=cartCount();$$('.cartcount').forEach(e=>{e.textContent=n;e.style.display=n>0?'':'';});}
 function addToCart(item){
@@ -242,6 +243,41 @@ function cartAddFromBtn(btn){
   addToCart({id:name.toLowerCase(),name:name,price:price});
 }
 window.addToCart=addToCart; window.getCart=getCart; window.saveCart=saveCart; window.cartCount=cartCount; window.updateCartCount=updateCartCount; window.cartAddFromBtn=cartAddFromBtn;
+
+/* ---------- SEPET SENKRON (giriş yapınca hesaba bağlı, cihazlar arası) ---------- */
+let _cartTimer=null;
+function pushCartToServer(){
+  if(!isAuthed())return;
+  clearTimeout(_cartTimer);
+  _cartTimer=setTimeout(()=>{
+    fetch('/api/cart',{method:'PUT',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({items:getCart()})}).catch(()=>{});
+  },600);
+}
+/* init'te (zaten girişli): sunucu sepeti tek kaynak → yereli onunla değiştir */
+async function loadCartFromServer(){
+  if(!isAuthed())return;
+  try{
+    const r=await fetch('/api/cart',{credentials:'same-origin'});
+    const d=await r.json();
+    if(Array.isArray(d.items)){localStorage.setItem(CART_KEY,JSON.stringify(d.items));updateCartCount();}
+  }catch(e){}
+}
+/* giriş ANINDA: misafir sepetini sunucudakiyle birleştir (id'ye göre adet topla), birliği yaz */
+async function mergeCartOnLogin(){
+  if(!isAuthed())return;
+  const local=getCart();
+  let server=[];
+  try{const r=await fetch('/api/cart',{credentials:'same-origin'});const d=await r.json();if(Array.isArray(d.items))server=d.items;}catch(e){}
+  const map={};
+  [...server,...local].forEach(it=>{if(!it||it.id==null)return;const k=String(it.id);
+    if(map[k])map[k].qty=(map[k].qty||0)+(it.qty||1);
+    else map[k]={id:it.id,name:it.name||'',price:it.price||0,qty:it.qty||1};});
+  const merged=Object.values(map);
+  try{localStorage.setItem(CART_KEY,JSON.stringify(merged));}catch(e){}
+  updateCartCount();
+  try{await fetch('/api/cart',{method:'PUT',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({items:merged})});}catch(e){}
+}
+window.loadCartFromServer=loadCartFromServer; window.mergeCartOnLogin=mergeCartOnLogin;
 window.addCart=()=>{}; /* eski API uyumu (no-op) */
 $$('.add').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();cartAddFromBtn(b);}));
 const _cb=$('#cartBtn'); if(_cb)_cb.addEventListener('click',()=>{location.href='sepet.html';});

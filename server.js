@@ -138,6 +138,12 @@ async function initDb() {
     created_at TEXT NOT NULL DEFAULT (datetime('now')),
     PRIMARY KEY (user_id, product)
   )`);
+  // sepet: kullanıcı başına 1 satır (cihazlar arası senkron)
+  await db.execute(`CREATE TABLE IF NOT EXISTS carts (
+    user_id INTEGER PRIMARY KEY,
+    items TEXT NOT NULL DEFAULT '[]',
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+  )`);
   await db.execute(`CREATE TABLE IF NOT EXISTS reviews (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     product TEXT NOT NULL,
@@ -353,6 +359,37 @@ app.post('/api/favorites/toggle', requireAuth, async (req, res) => {
   else await db.execute({ sql: 'INSERT OR IGNORE INTO favorites (user_id, product) VALUES (?, ?)', args: [req.user.id, p] });
   const count = (await db.execute({ sql: 'SELECT COUNT(*) AS c FROM favorites WHERE user_id = ?', args: [req.user.id] })).rows[0].c;
   res.json({ product: p, favorited: !has, count: Number(count) });
+});
+
+/* ---------- SEPET (kullanıcıya bağlı, cihazlar arası senkron) ---------- */
+function cleanCartItems(arr) {
+  if (!Array.isArray(arr)) return [];
+  const map = {};
+  for (const it of arr) {
+    if (!it || it.id == null) continue;
+    const id = String(it.id).slice(0, 120);
+    const qty = Math.max(1, Math.min(99, parseInt(it.qty) || 1));
+    const price = Math.max(0, parseInt(it.price) || 0);
+    const name = String(it.name || '').slice(0, 160);
+    if (map[id]) map[id].qty = Math.min(99, map[id].qty + qty);
+    else map[id] = { id, name, price, qty };
+  }
+  return Object.values(map).slice(0, 100);
+}
+app.get('/api/cart', requireAuth, async (req, res) => {
+  const r = await db.execute({ sql: 'SELECT items FROM carts WHERE user_id = ?', args: [req.user.id] });
+  let items = [];
+  if (r.rows.length) { try { items = JSON.parse(r.rows[0].items || '[]'); } catch (e) { items = []; } }
+  res.json({ items });
+});
+app.put('/api/cart', requireAuth, async (req, res) => {
+  const items = cleanCartItems(req.body && req.body.items);
+  await db.execute({
+    sql: `INSERT INTO carts (user_id, items, updated_at) VALUES (?, ?, datetime('now'))
+          ON CONFLICT(user_id) DO UPDATE SET items = excluded.items, updated_at = excluded.updated_at`,
+    args: [req.user.id, JSON.stringify(items)],
+  });
+  res.json({ items });
 });
 
 /* ---------- yorumlar / gerçek değerlendirme ---------- */
