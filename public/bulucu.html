@@ -91,47 +91,40 @@
 <div class="toast" id="toast"></div>
 
 <script src="assets/diri.js"></script>
+<script src="assets/catalog.js"></script>
 <script>
-const PRODUCTS=[
- {cat:'Kilo Kontrolü',goals:['kilo','enerji'],name:'Formül 1 Besleyici Shake',rate:'4.9',rev:214,img:'https://images.unsplash.com/photo-1654084767590-a38c7f0f5bd3?auto=format&fit=crop&w=600&q=80',d:'Dengeli bir öğün yerine geçen, protein ve bitki besinli içecek tozu.'},
- {cat:'Sporcu',goals:['kas'],name:'Saf Protein Tozu',rate:'4.8',rev:167,img:'https://images.unsplash.com/photo-1622484212022-983850e48832?auto=format&fit=crop&w=600&q=80',d:'Antrenman sonrası toparlanma ve kas desteği için yüksek protein.'},
- {cat:'Günlük Beslenme',goals:['enerji','kilo'],name:'Bitki Bazlı Çay İçeceği',rate:'4.9',rev:341,img:'https://images.unsplash.com/photo-1514994960127-ed3ef9239d11?auto=format&fit=crop&w=600&q=80',d:'Gün boyu canlılık için ferahlatıcı, hafif bitki çayı karışımı.'},
- {cat:'Günlük Beslenme',goals:['sindirim'],name:'Aloe Konsantre İçecek',rate:'4.7',rev:98,img:'https://images.unsplash.com/photo-1615182786737-16b4caf5580a?auto=format&fit=crop&w=600&q=80',d:'Su tüketimini keyifli hale getiren, hafif aloe veralı konsantre.'},
- {cat:'Sporcu',goals:['kas','enerji'],name:'Protein Bar',rate:'4.8',rev:122,img:'https://images.unsplash.com/photo-1511909525232-61113c912358?auto=format&fit=crop&w=600&q=80',d:'Yanında taşı, tok kal: pratik ve lezzetli protein atıştırması.'},
- {cat:'Günlük Beslenme',goals:['enerji','sindirim','vitamin'],name:'Günlük Multivitamin',rate:'4.9',rev:203,img:'https://images.unsplash.com/photo-1543364195-bfe6e4932397?auto=format&fit=crop&w=600&q=80',d:'Yoğun günlerde temel vitamin ve mineral desteği.'}
-];
+/* ürün verisi: assets/catalog.js → window.CATALOG (mağaza ile aynı tek kaynak) */
+const CAT=window.CATALOG;
+CAT.loadSummary(); // gerçek puan özetini erkenden çek
 const GLBL={kilo:'Kilo vermek',kas:'Kas & sporcu',enerji:'Enerji & canlılık',sindirim:'Sindirim & hafiflik'};
-/* DEMO örnek fiyatlar — magaza.html ile aynı. window.PRICE_PUBLIC=false ise gizlenir (diri.js). */
-const PRICE_BY_NAME={'Formül 1 Besleyici Shake':1290,'Saf Protein Tozu':1150,'Bitki Bazlı Çay İçeceği':1490,'Aloe Konsantre İçecek':980,'Protein Bar':540,'Günlük Multivitamin':690};
-const fmtP=n=>(n||0).toLocaleString('tr-TR')+' ₺';
-const priceTag=name=>window.PRICE_PUBLIC?`<span class="price" style="font-weight:800;font-size:1.06rem;color:var(--ink)">${fmtP(PRICE_BY_NAME[name])}</span>`:`<span class="lockprice"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Fiyat üyelikte</span>`;
-let goal=null, prefs=[];
+let goal=null, prefs=[], lastList=[];
 $$('#goals .chip').forEach(c=>c.addEventListener('click',()=>{$$('#goals .chip').forEach(x=>x.setAttribute('aria-pressed','false'));c.setAttribute('aria-pressed','true');goal=c.dataset.goal;}));
 $$('#prefs .chip').forEach(c=>c.addEventListener('click',()=>{const on=c.getAttribute('aria-pressed')==='true';c.setAttribute('aria-pressed',(!on).toString());prefs=$$('#prefs .chip[aria-pressed=true]').map(x=>x.dataset.pref);}));
-function pcard(p,match){
-  return `<article class="pcard${match?' match':''}">${match?'<span class="match-rib">✦ Sana uygun</span>':''}
-    <div class="picwrap"><img class="pic" src="${p.img}" alt="${p.name}"><button class="fav" aria-label="Favori"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21C5 14 3 11 3 7.5A4.5 4.5 0 0 1 12 6a4.5 4.5 0 0 1 9 1.5C21 11 19 14 12 21z"/></svg></button></div>
-    <div class="body"><span class="cat">${p.cat}</span><h3>${p.name}</h3><p>${p.d}</p>
-      <div class="stars">★★★★★ <b>${p.rate}</b> <span>(${p.rev})</span></div>
-      <div class="row">${priceTag(p.name)}<button class="btn btn-primary btn-sm add">Sepete ekle</button></div></div>
-  </article>`;
+/* skor: hedef eşleşmesi (2p) + yaşam tarzı bonusları (gerçek kategori/isimle) */
+function scoreOf(p){
+  let s=p.goals.includes(goal)?2:0;
+  if(prefs.includes('vitamin')&&p.cat==='takviye')s++;
+  if(prefs.includes('su')&&(p.cat==='icecek'||/aloe/i.test(p.name)))s++;
+  if(prefs.includes('atistirma')&&p.cat==='atistirma')s++;
+  if(prefs.includes('pratik')&&/shake|formül 1/i.test(p.name))s++;
+  return s;
 }
-$('#goBtn').addEventListener('click',()=>{
-  if(!goal){toast('Önce bir hedef seç');return;}
-  // skor: hedef eşleşmesi + tercih bonusu
-  const scored=PRODUCTS.map(p=>{let s=p.goals.includes(goal)?2:0;
-    if(prefs.includes('vitamin')&&p.goals.includes('vitamin'))s++;
-    if(prefs.includes('su')&&p.name.includes('Aloe'))s++;
-    if(prefs.includes('atistirma')&&p.name.includes('Bar'))s++;
-    if(prefs.includes('pratik')&&p.name.includes('Shake'))s++;
-    return {p,s};}).sort((a,b)=>b.s-a.s);
-  const top=scored.filter(x=>x.s>0).slice(0,4); const list=top.length?top:scored.slice(0,4);
-  $('#grid').innerHTML=list.map(x=>pcard(x.p,x.s>=2)).join('');
-  $('#resh').textContent=GLBL[goal]+' için önerilenler';
-  $('#results').hidden=false;
+function paint(){
+  $('#grid').innerHTML=lastList.map(x=>CAT.card(x.p,{match:x.s>=2})).join('');
   $$('#grid .add').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();window.cartAddFromBtn(b);}));
   $$('#grid .fav').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();e.preventDefault();window.toggleFav&&window.toggleFav(b);}));
   if(window.refreshFavButtons)window.refreshFavButtons();
+}
+$('#goBtn').addEventListener('click',()=>{
+  if(!goal){toast('Önce bir hedef seç');return;}
+  const pool=CAT.products.filter(p=>p.stock&&p.price);
+  const scored=pool.map(p=>({p,s:scoreOf(p)})).sort((a,b)=>(b.s-a.s)||(b.p.pop-a.p.pop));
+  const top=scored.filter(x=>x.s>0).slice(0,6);
+  lastList=top.length?top:scored.slice(0,6);
+  paint();
+  $('#resh').textContent=GLBL[goal]+' için önerilenler';
+  $('#results').hidden=false;
+  CAT.loadSummary().then(paint); // gerçek puanlar gelince yıldızları tazele
   $('#results').scrollIntoView({behavior:'smooth'});
   toast('İşte sana uygun ürünler ✦');
 });

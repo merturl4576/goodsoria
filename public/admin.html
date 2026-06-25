@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yönetim — Goodsoria</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/diri.css">
+<style>
+.admin-wrap{max-width:1100px;margin:0 auto;padding:1.4rem 1.1rem 4rem}
+.admin-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.2rem}
+.admin-head h1{font-family:"Bricolage Grotesque";font-size:1.7rem;margin:0}
+.admin-head .sub{color:var(--muted);font-size:.9rem;margin-top:.2rem}
+.kpis-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin-bottom:1.4rem}
+.kpi{background:var(--surface,#fff);border:1px solid var(--line);border-radius:14px;padding:.9rem 1rem}
+.kpi b{font-family:"Bricolage Grotesque";font-size:1.7rem;display:block;color:var(--ink);line-height:1.1}
+.kpi span{color:var(--muted);font-size:.82rem;font-weight:600}
+.tabs{display:flex;gap:.5rem;margin-bottom:1rem}
+.tabs button{font:inherit;font-weight:700;font-size:.9rem;padding:.5rem 1rem;border-radius:999px;border:1.5px solid var(--line);background:var(--surface,#fff);color:var(--muted);cursor:pointer}
+.tabs button.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+.tablecard{background:var(--surface,#fff);border:1px solid var(--line);border-radius:16px;padding:.4rem;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.86rem;min-width:680px}
+th,td{text-align:left;padding:.65rem .7rem;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:800}
+tr:last-child td{border-bottom:0}
+.mono{font-variant-numeric:tabular-nums}
+.ono{font-weight:800;color:var(--brand)}
+.muted{color:var(--muted)}
+.items-mini{color:var(--muted);font-size:.78rem;line-height:1.4}
+.st-sel{font:inherit;font-weight:700;font-size:.8rem;border:1px solid var(--line);border-radius:8px;padding:.35rem .5rem;background:var(--bg,#fff);color:var(--ink);cursor:pointer}
+.badge-s{font-weight:800;font-size:.7rem;padding:.2rem .5rem;border-radius:999px}
+.gate{max-width:420px;margin:8vh auto;text-align:center;background:var(--surface,#fff);border:1px solid var(--line);border-radius:18px;padding:2rem 1.6rem}
+.gate h2{font-family:"Bricolage Grotesque";margin:.4rem 0 .5rem}
+.gate p{color:var(--muted);margin:0 0 1.2rem}
+.empty-t{text-align:center;color:var(--muted);padding:2rem}
+@media(max-width:680px){.kpis-row{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body data-page="admin" data-requires-auth>
+
+<div class="compliance"><div class="in">
+  <b>Goodsoria Yönetim</b><span class="sep">•</span><span>Bağımsız Distribütör Paneli</span>
+  <span class="badge"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6z"/></svg> Yalnız yetkili erişim</span>
+</div></div>
+
+<!-- yetki yoksa -->
+<div class="gate" id="gate" hidden>
+  <div class="ok-ic" style="width:3rem;height:3rem;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;margin:0 auto 1rem"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+  <h2 id="gateTitle">Yönetici girişi gerekli</h2>
+  <p id="gateMsg">Bu panel yalnızca distribütör hesabına açıktır. Yönetici e-postanla giriş yap.</p>
+  <button class="btn btn-primary" data-join>Giriş yap</button>
+  <p style="margin-top:1rem"><a href="platform.html" class="muted">← Siteye dön</a></p>
+</div>
+
+<!-- panel -->
+<div class="admin-wrap" id="panel" hidden>
+  <div class="admin-head">
+    <div><h1>Yönetim Paneli</h1><div class="sub" id="who">—</div></div>
+    <div style="display:flex;gap:.5rem">
+      <button class="btn btn-ghost btn-sm" id="refreshBtn">↻ Yenile</button>
+      <button class="btn btn-ghost btn-sm" id="logoutBtn">Çıkış</button>
+    </div>
+  </div>
+
+  <div class="kpis-row">
+    <div class="kpi"><b id="k-orders">0</b><span>Sipariş</span></div>
+    <div class="kpi"><b id="k-new">0</b><span>Yeni / bekleyen</span></div>
+    <div class="kpi"><b id="k-rev">0 ₺</b><span>Toplam ciro (iptal hariç)</span></div>
+    <div class="kpi"><b id="k-leads">0</b><span>Lead (potansiyel)</span></div>
+  </div>
+
+  <div class="tabs">
+    <button id="tabOrders" class="on">Siparişler</button>
+    <button id="tabLeads">Lead'ler</button>
+  </div>
+
+  <div class="tablecard" id="ordersCard">
+    <table>
+      <thead><tr><th>No</th><th>Müşteri</th><th>Ürünler</th><th>Tutar</th><th>Ödeme</th><th>Tarih</th><th>Durum</th></tr></thead>
+      <tbody id="ordersBody"></tbody>
+    </table>
+    <p class="empty-t" id="ordersEmpty" hidden>Henüz sipariş yok.</p>
+  </div>
+
+  <div class="tablecard" id="leadsCard" hidden>
+    <table>
+      <thead><tr><th>Ad</th><th>İletişim</th><th>Kaynak</th><th>Detay</th><th>Tarih</th><th>Durum</th></tr></thead>
+      <tbody id="leadsBody"></tbody>
+    </table>
+    <p class="empty-t" id="leadsEmpty" hidden>Henüz lead yok.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="assets/diri.js"></script>
+<script>
+const fmt=n=>(n||0).toLocaleString('tr-TR')+' ₺';
+const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const fmtDate=s=>{ if(!s)return''; const p=String(s).split(' '); const d=(p[0]||'').split('-'); return d.length===3?(d[2]+'.'+d[1]+'.'+d[0]+(p[1]?' '+p[1].slice(0,5):'')):s; };
+const ORD_ST={yeni:'Yeni',hazirlaniyor:'Hazırlanıyor',kargoda:'Kargoda',teslim:'Teslim edildi',iptal:'İptal'};
+const ORD_COLOR={yeni:'#d9a316',hazirlaniyor:'#3b9ae1',kargoda:'#7c5cd6',teslim:'#2e9d5b',iptal:'#d64545'};
+const LEAD_ST={yeni:'Yeni',arandi:'Arandı',kazanildi:'Kazanıldı',kayip:'Kayıp'};
+const LEAD_COLOR={yeni:'#d9a316',arandi:'#3b9ae1',kazanildi:'#2e9d5b',kayip:'#d64545'};
+
+function stSelect(kind,id,cur){
+  const map=kind==='order'?ORD_ST:LEAD_ST;
+  const opts=Object.keys(map).map(k=>'<option value="'+k+'"'+(k===cur?' selected':'')+'>'+map[k]+'</option>').join('');
+  return '<select class="st-sel" data-kind="'+kind+'" data-id="'+id+'" style="border-color:'+((kind==='order'?ORD_COLOR:LEAD_COLOR)[cur]||'var(--line)')+'">'+opts+'</select>';
+}
+
+async function load(){
+  let me;
+  try{ me=await (await fetch('/api/auth/me',{credentials:'same-origin'})).json(); }catch(e){ me={user:null}; }
+  const u=me.user;
+  if(!u || u.role!=='admin'){
+    $('#panel').hidden=true; $('#gate').hidden=false;
+    if(u){ $('#gateTitle').textContent='Bu hesap yönetici değil'; $('#gateMsg').textContent=u.name+' olarak giriştesin ama bu panel yalnızca yönetici e-postasına açık.'; }
+    return;
+  }
+  $('#gate').hidden=true; $('#panel').hidden=false;
+  $('#who').textContent=u.name+' · '+u.email;
+  const [oR,lR]=await Promise.all([
+    fetch('/api/admin/orders',{credentials:'same-origin'}).then(r=>r.json()),
+    fetch('/api/admin/leads',{credentials:'same-origin'}).then(r=>r.json())
+  ]);
+  renderOrders(oR.orders||[]); renderLeads(lR.leads||[]);
+}
+
+function renderOrders(list){
+  $('#k-orders').textContent=list.length;
+  $('#k-new').textContent=list.filter(o=>o.status==='yeni'||o.status==='hazirlaniyor').length;
+  $('#k-rev').textContent=fmt(list.filter(o=>o.status!=='iptal').reduce((s,o)=>s+(o.total||0),0));
+  $('#ordersEmpty').hidden=list.length>0;
+  $('#ordersBody').innerHTML=list.map(o=>{
+    const cust=esc(o.guest_name||'—')+'<br><span class="muted mono">'+esc(o.phone||'')+'</span>';
+    const items=(o.items||[]).map(i=>esc(i.name)+' ×'+i.qty).join(', ');
+    return '<tr><td><span class="ono">'+esc(o.ono)+'</span></td>'
+      +'<td>'+cust+'</td>'
+      +'<td><span class="items-mini">'+items+'</span></td>'
+      +'<td class="mono">'+fmt(o.total)+'</td>'
+      +'<td>'+(o.payment_method==='havale'?'Havale':'Kapıda')+'</td>'
+      +'<td class="muted mono">'+fmtDate(o.created_at)+'</td>'
+      +'<td>'+stSelect('order',o.id,o.status)+'</td></tr>';
+  }).join('');
+  bindSelects();
+}
+function renderLeads(list){
+  $('#k-leads').textContent=list.length;
+  $('#leadsEmpty').hidden=list.length>0;
+  $('#leadsBody').innerHTML=list.map(l=>{
+    const det=[l.bmi?'VKİ '+esc(l.bmi)+(l.category?' ('+esc(l.category)+')':''):'',l.goal?'Hedef: '+esc(l.goal):''].filter(Boolean).join(' · ')||'—';
+    const contact=esc(l.phone||'')+(l.email?'<br><span class="muted">'+esc(l.email)+'</span>':'');
+    return '<tr><td><b>'+esc(l.name||'—')+'</b></td>'
+      +'<td class="mono">'+contact+'</td>'
+      +'<td>'+esc(l.source||'')+'</td>'
+      +'<td><span class="items-mini">'+det+'</span></td>'
+      +'<td class="muted mono">'+fmtDate(l.created_at)+'</td>'
+      +'<td>'+stSelect('lead',l.id,l.status)+'</td></tr>';
+  }).join('');
+  bindSelects();
+}
+function bindSelects(){
+  $$('.st-sel').forEach(sel=>sel.onchange=async()=>{
+    const kind=sel.dataset.kind, id=sel.dataset.id, st=sel.value;
+    const url=kind==='order'?'/api/admin/orders/'+id+'/status':'/api/admin/leads/'+id+'/status';
+    sel.disabled=true;
+    try{
+      const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({status:st})});
+      if(!r.ok)throw 0;
+      sel.style.borderColor=(kind==='order'?ORD_COLOR:LEAD_COLOR)[st]||'var(--line)';
+      toast('Durum güncellendi');
+      if(kind==='order')load(); // KPI'ları tazele
+    }catch(e){ toast('Güncellenemedi'); }
+    sel.disabled=false;
+  });
+}
+
+// sekmeler
+$('#tabOrders').onclick=()=>{$('#tabOrders').classList.add('on');$('#tabLeads').classList.remove('on');$('#ordersCard').hidden=false;$('#leadsCard').hidden=true;};
+$('#tabLeads').onclick=()=>{$('#tabLeads').classList.add('on');$('#tabOrders').classList.remove('on');$('#leadsCard').hidden=false;$('#ordersCard').hidden=true;};
+$('#refreshBtn').onclick=()=>{load();toast('Yenilendi');};
+$('#logoutBtn').onclick=async()=>{ try{await fetch('/api/auth/logout',{method:'POST',credentials:'same-origin'});}catch(e){} location.reload(); };
+
+load();
+// giriş modalından sonra panel açılsın
+if(window.authReady)window.authReady.then(()=>load());
+</script>
+</body>
+</html>

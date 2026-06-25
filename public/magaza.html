@@ -9,6 +9,55 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/diri.css">
+<style>
+/* mağaza: indirim rozeti + üstü çizili eski fiyat + stok */
+.disc-rib{position:absolute;top:.6rem;left:.6rem;z-index:2;background:var(--danger,#d64545);color:#fff;font-weight:800;font-size:.74rem;padding:.2rem .5rem;border-radius:999px;box-shadow:0 4px 12px -4px rgba(0,0,0,.4)}
+.priceblock{display:inline-flex;align-items:baseline;gap:.4rem;flex-wrap:wrap;min-width:0}
+.oldprice{color:var(--muted);text-decoration:line-through;font-size:.85rem;font-weight:600}
+.pcard .row{flex-wrap:wrap;row-gap:.5rem}
+.pcard.soldout{opacity:.66}
+.soldlabel{font-weight:800;color:var(--muted);font-size:.9rem}
+/* gerçek değerlendirme: kart yıldızları + modal yorum bloğu */
+.stars{display:flex;align-items:center;gap:.35rem;font-size:.95rem;line-height:1}
+.stars b{font-weight:800;color:var(--ink)}
+.stars .rv-count,.stars span{color:var(--muted);font-size:.8rem;font-weight:600}
+.pcard .body .stars{margin:.1rem 0 .45rem}
+.stars-empty{font-size:.82rem}
+#pd-reviews{margin-top:1.1rem;border-top:1px solid var(--line);padding-top:1rem}
+.rv-h4{font-weight:800;font-size:1.02rem;margin:0 0 .7rem}
+.rv-form{background:var(--surface-2,#f7f4ec);border:1px solid var(--line);border-radius:14px;padding:.85rem .9rem;margin-bottom:1rem}
+.rv-pick{display:flex;gap:.1rem;margin-bottom:.55rem}
+.rv-pick button{background:none;border:none;cursor:pointer;font-size:1.7rem;line-height:1;color:var(--line,#d9d2c4);padding:0 .06rem;transition:color .12s,transform .12s}
+.rv-pick button:hover{transform:scale(1.12)}
+.rv-pick button.on{color:#f4b400}
+.rv-form textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:.55rem .65rem;font:inherit;resize:vertical;min-height:62px;background:var(--surface,#fff);box-sizing:border-box}
+.rv-login{background:var(--surface-2,#f7f4ec);border:1px solid var(--line);border-radius:14px;padding:1rem;text-align:center;margin-bottom:1rem}
+.rv-item{padding:.7rem 0;border-bottom:1px solid var(--line)}
+.rv-item:last-child{border-bottom:none}
+.rv-item .top{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+.rv-item .nm{font-weight:700;font-size:.9rem;color:var(--ink)}
+.rv-item .dt{color:var(--muted);font-size:.74rem;white-space:nowrap}
+.rv-item .bd{margin:.35rem 0 0;color:var(--ink);font-size:.9rem;line-height:1.5}
+.rv-empty{color:var(--muted);font-size:.88rem;padding:.3rem 0}
+/* mağaza içi ürün arama (sortbar) */
+.shop-search{flex:0 1 340px;max-width:340px;padding:.46em .9em}
+.shop-search svg{width:17px;height:17px}
+.shop-search input{font-size:.92rem}
+.shop-search input::-webkit-search-cancel-button{cursor:pointer}
+/* hızlı hedef çipleri (oval, tıklanabilir) */
+.goalchips{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center}
+.gchip{display:inline-flex;align-items:center;gap:.34em;border:1px solid var(--line);background:var(--surface);color:var(--ink);
+  border-radius:999px;padding:.42em .85em;font:inherit;font-size:.82rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:.16s}
+.gchip:hover{border-color:var(--brand);color:var(--brand);transform:translateY(-1px)}
+.gchip .gic{font-size:.98em;line-height:1}
+.gchip.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.gchip.on:hover{color:#fff}
+@media(max-width:600px){
+  .shop-search{flex:1 1 100%;max-width:none;order:3}
+  .goalchips{order:4;width:100%;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:.2rem;scrollbar-width:none}
+  .goalchips::-webkit-scrollbar{display:none}
+}
+</style>
 </head>
 <body data-page="magaza">
 
@@ -48,7 +97,7 @@
     <main>
       <div>
         <div class="crumb"><a href="platform.html">Ana Sayfa</a><span class="s">/</span><span>Mağaza</span></div>
-        <div class="page-head"><h1>Mağaza</h1><p class="sub">Hedefine uygun Herbalife ürünleri ve fiyatları. <span style="opacity:.7">(Fiyatlar örnek/demo amaçlıdır.)</span></p></div>
+        <div class="page-head"><h1>Mağaza</h1><p class="sub">Hedefine uygun Herbalife ürünleri ve güncel fiyatları. <span style="opacity:.7">Fiyata KDV dahildir.</span></p></div>
       </div>
 
       <section class="shop">
@@ -56,23 +105,15 @@
         <aside class="filters">
           <div class="fgroup">
             <div class="fh">Kategori</div>
-            <label class="fopt"><input type="radio" name="cat" value="all" checked> Tümü <span class="ct" id="ct-all">0</span></label>
-            <label class="fopt"><input type="radio" name="cat" value="kilo"> Kilo Kontrolü <span class="ct" id="ct-kilo">0</span></label>
-            <label class="fopt"><input type="radio" name="cat" value="sporcu"> Sporcu <span class="ct" id="ct-sporcu">0</span></label>
-            <label class="fopt"><input type="radio" name="cat" value="gunluk"> Günlük Beslenme <span class="ct" id="ct-gunluk">0</span></label>
+            <div id="catFilters"></div>
           </div>
           <div class="fgroup">
             <div class="fh">Hedef</div>
             <label class="fopt"><input type="checkbox" class="goalf" value="kilo"> Kilo vermek</label>
             <label class="fopt"><input type="checkbox" class="goalf" value="kas"> Kas & sporcu</label>
             <label class="fopt"><input type="checkbox" class="goalf" value="enerji"> Enerji & canlılık</label>
+            <label class="fopt"><input type="checkbox" class="goalf" value="bagisiklik"> Bağışıklık desteği</label>
             <label class="fopt"><input type="checkbox" class="goalf" value="sindirim"> Sindirim & hafiflik</label>
-          </div>
-          <div class="fgroup">
-            <div class="fh">Puan</div>
-            <label class="fopt"><input type="radio" name="rate" value="0" checked> Tümü</label>
-            <label class="fopt"><input type="radio" name="rate" value="4.8"> <span class="star">★★★★★</span> 4.8+</label>
-            <label class="fopt"><input type="radio" name="rate" value="4.5"> <span class="star">★★★★☆</span> 4.5+</label>
           </div>
           <button class="btn btn-ghost btn-sm btn-block" id="clearF">Filtreleri temizle</button>
         </aside>
@@ -81,11 +122,17 @@
         <div class="shop-main">
           <div class="sortbar">
             <span class="count" id="count">— ürün</span>
+            <label class="search shop-search">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+              <input id="shopq" type="search" placeholder="Ürün adıyla ara…" autocomplete="off">
+            </label>
+            <div class="goalchips" id="goalchips" role="group" aria-label="Hızlı hedef filtreleri"></div>
             <div class="sp">
               <span style="color:var(--muted);font-size:.85rem;font-weight:600">Sırala</span>
               <select class="sel" id="sort">
                 <option value="pop">Popülerlik</option>
-                <option value="rate">Puana göre</option>
+                <option value="priceAsc">Fiyat (artan)</option>
+                <option value="priceDesc">Fiyat (azalan)</option>
                 <option value="name">İsme göre (A-Z)</option>
               </select>
             </div>
@@ -137,63 +184,77 @@
     <div class="specs" id="pd-specs"></div>
     <div class="lockbox" id="pd-pricebox"><b>🔒 Fiyat üyelikte görünür</b><small>Kurallar gereği fiyat herkese açık gösterilemez. Üye ol, fiyatı gör ve sipariş ver.</small></div>
     <div class="acts"><button class="btn btn-primary" data-join>Üye ol & fiyatı gör</button><button class="btn btn-ghost" id="pd-add">Sepete ekle</button></div>
+    <div id="pd-reviews"></div>
   </div>
 </div></div>
 
 <div class="toast" id="toast"></div>
 
 <script src="assets/diri.js"></script>
+<script src="assets/catalog.js"></script>
 <script>
-const PRODUCTS=[
- {id:1,cat:'kilo',cn:'Kilo Kontrolü',goals:['kilo','enerji'],name:'Formül 1 Besleyici Shake',rate:4.9,rev:214,pop:99,img:'https://images.unsplash.com/photo-1654084767590-a38c7f0f5bd3?auto=format&fit=crop&w=600&q=80',desc:'Dengeli bir öğün yerine geçen, protein ve bitki besinli içecek tozu. Vitamin ve mineral desteğiyle gün boyu tokluk.',specs:['~21 öğün / kutu','Protein + 21 vitamin & mineral','Vegan dostu seçenekler']},
- {id:2,cat:'sporcu',cn:'Sporcu',goals:['kas'],name:'Saf Protein Tozu',rate:4.8,rev:167,pop:88,img:'https://images.unsplash.com/photo-1622484212022-983850e48832?auto=format&fit=crop&w=600&q=80',desc:'Antrenman sonrası toparlanma ve kas desteği için yüksek kaliteli protein. Şekersiz, kolay karışan formül.',specs:['Yüksek protein','Antrenman sonrası ideal','Düşük şeker']},
- {id:3,cat:'gunluk',cn:'Günlük Beslenme',goals:['enerji','kilo'],name:'Bitki Bazlı Çay İçeceği',rate:4.9,rev:341,pop:96,img:'https://images.unsplash.com/photo-1514994960127-ed3ef9239d11?auto=format&fit=crop&w=600&q=80',desc:'Gün boyu canlılık için ferahlatıcı, hafif bitki çayı karışımı. Sıcak veya soğuk tüketilebilir.',specs:['Düşük kalori','Sıcak/soğuk içim','Ferahlatıcı aroma']},
- {id:4,cat:'gunluk',cn:'Günlük Beslenme',goals:['sindirim'],name:'Aloe Konsantre İçecek',rate:4.7,rev:98,pop:74,img:'https://images.unsplash.com/photo-1615182786737-16b4caf5580a?auto=format&fit=crop&w=600&q=80',desc:'Su tüketimini keyifli hale getiren, hafif aloe veralı konsantre. Sindirime ve günlük su alımına destek.',specs:['Aloe vera özlü','Suya katılır','Hafif tat']},
- {id:5,cat:'sporcu',cn:'Sporcu',goals:['kas','enerji'],name:'Protein Bar',rate:4.8,rev:122,pop:80,img:'https://images.unsplash.com/photo-1511909525232-61113c912358?auto=format&fit=crop&w=600&q=80',desc:'Yanında taşı, tok kal: pratik ve lezzetli protein atıştırması. Ara öğün için ideal.',specs:['Pratik ara öğün','Protein kaynağı','Lezzetli']},
- {id:6,cat:'gunluk',cn:'Günlük Beslenme',goals:['enerji','sindirim'],name:'Günlük Multivitamin',rate:4.9,rev:203,pop:90,img:'https://images.unsplash.com/photo-1543364195-bfe6e4932397?auto=format&fit=crop&w=600&q=80',desc:'Yoğun günlerde temel vitamin ve mineral desteği. Dengeli beslenmeyi tamamlar.',specs:['Geniş vitamin yelpazesi','Günlük 1 servis','Dengeli formül']},
- {id:7,cat:'kilo',cn:'Kilo Kontrolü',goals:['kilo'],name:'Öğün Yerine Geçen Bar',rate:4.6,rev:76,pop:70,img:'https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?auto=format&fit=crop&w=600&q=80',desc:'Yoğun günlerde pratik öğün alternatifi. Dengeli besin profili ile tokluk hissi.',specs:['Pratik öğün','Dengeli besin','Taşınabilir']},
- {id:8,cat:'kilo',cn:'Kilo Kontrolü',goals:['kilo','enerji'],name:'Protein Atıştırması (Kuruyemiş)',rate:4.7,rev:64,pop:66,img:'https://images.unsplash.com/photo-1559656914-a30970c1affd?auto=format&fit=crop&w=600&q=80',desc:'Tuzlu/protein dengeli kuruyemiş karışımı. Ara öğünde tatlı krizine alternatif.',specs:['Protein dengeli','Doğal kuruyemiş','Ara öğün']},
- {id:9,cat:'sporcu',cn:'Sporcu',goals:['kas','enerji'],name:'Antrenman Öncesi İçecek',rate:4.6,rev:58,pop:64,img:'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=600&q=80',desc:'Antrenman öncesi enerji ve odak desteği. Performansını yükseltmek için hafif formül.',specs:['Enerji desteği','Antrenman öncesi','Hafif formül']},
- {id:10,cat:'gunluk',cn:'Günlük Beslenme',goals:['enerji'],name:'C Vitamini Takviyesi',rate:4.8,rev:140,pop:78,img:'https://images.unsplash.com/photo-1606787366540-3e9a8b3a8b00?auto=format&fit=crop&w=600&q=80',desc:'Bağışıklık ve günlük canlılık için C vitamini desteği.',specs:['Bağışıklık desteği','Günlük servis','Kolay yutulur']},
- {id:11,cat:'gunluk',cn:'Günlük Beslenme',goals:['sindirim','enerji'],name:'Lifli Içecek Tozu',rate:4.5,rev:52,pop:60,img:'https://images.unsplash.com/photo-1610970881699-44a5587cabec?auto=format&fit=crop&w=600&q=80',desc:'Günlük lif alımını destekleyen, suya karışan içecek tozu. Sindirim sistemine destek.',specs:['Lif kaynağı','Suya karışır','Hafif tat']},
- {id:12,cat:'kilo',cn:'Kilo Kontrolü',goals:['kilo'],name:'Başlangıç Programı Seti',rate:4.9,rev:189,pop:95,img:'https://images.unsplash.com/photo-1505576399279-565b52d4ac71?auto=format&fit=crop&w=600&q=80',desc:'Yeni başlayanlar için shake + çay + aloe içeren komple program seti. En çok tercih edilen başlangıç paketi.',specs:['3 ürün bir arada','Yeni başlayan dostu','En popüler set']}
-];
-const CN={all:'Tümü',kilo:'Kilo Kontrolü',sporcu:'Sporcu',gunluk:'Günlük Beslenme'};
-/* DEMO örnek fiyatlar (TRY) — placeholder, gerçek değil. window.PRICE_PUBLIC=false ise gizlenir (diri.js). */
-const PRICE={1:1290,2:1150,3:1490,4:980,5:540,6:690,7:760,8:480,9:890,10:420,11:1090,12:3250};
-const fmtP=id=>(PRICE[id]||0).toLocaleString('tr-TR')+' ₺';
-const priceTag=id=>window.PRICE_PUBLIC?`<span class="price" style="font-weight:800;font-size:1.06rem;color:var(--ink)">${fmtP(id)}</span>`:`<span class="lockprice"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Fiyat üyelikte</span>`;
-const grid=$('#grid'), countEl=$('#count'), empty=$('#empty');
-let f={cat:'all',goals:[],rate:0,sort:'pop',q:''};
+/* ürün verisi: assets/catalog.js → window.CATALOG */
+const PRODUCTS = window.CATALOG.products;
+const CATS = window.CATALOG.categories;
+const catName = window.CATALOG.catName;
+const fmt = n => (n||0).toLocaleString('tr-TR') + ' ₺';
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const discPct = p => (p.old && p.old > p.price) ? Math.round((1 - p.price/p.old) * 100) : 0;
 
-function star(r){const full=Math.round(r);return '★★★★★'.slice(0,full)+'☆☆☆☆☆'.slice(0,5-full);}
+/* kategori filtreleri (dinamik) */
+$('#catFilters').innerHTML =
+  '<label class="fopt"><input type="radio" name="cat" value="all" checked> Tümü <span class="ct" id="ct-all">0</span></label>' +
+  CATS.map(c => '<label class="fopt"><input type="radio" name="cat" value="'+c.key+'"> '+c.name+' <span class="ct" id="ct-'+c.key+'">0</span></label>').join('');
+
+const grid=$('#grid'), countEl=$('#count'), empty=$('#empty');
+let f={cat:'all',goals:[],sort:'pop',q:''};
+
+function priceRow(p){
+  if(!p.stock || !p.price) return '<span class="soldlabel">Stokta yok</span>';
+  let h = '<span class="price" style="font-weight:800;font-size:1.06rem;color:var(--ink)">'+fmt(p.price)+'</span>';
+  if(p.old) h += '<span class="oldprice">'+fmt(p.old)+'</span>';
+  return '<span class="priceblock">'+h+'</span>';
+}
+function addBtnHtml(p){
+  return (p.stock && p.price)
+    ? '<button class="btn btn-primary btn-sm add" data-add="'+p.id+'">Sepete ekle</button>'
+    : '<button class="btn btn-ghost btn-sm" disabled>Stok yok</button>';
+}
 function card(p){
-  return `<article class="pcard" data-id="${p.id}">
-    <div class="picwrap"><img class="pic" src="${p.img}" alt="${p.name}"><button class="fav" aria-label="Favori"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21C5 14 3 11 3 7.5A4.5 4.5 0 0 1 12 6a4.5 4.5 0 0 1 9 1.5C21 11 19 14 12 21z"/></svg></button></div>
-    <div class="body"><span class="cat">${p.cn}</span><h3>${p.name}</h3><p>${p.desc.split('.')[0]}.</p>
-      <div class="stars">${star(p.rate)} <b>${p.rate}</b> <span>(${p.rev})</span></div>
-      <div class="row">${priceTag(p.id)}<button class="btn btn-primary btn-sm add" data-add="${p.id}">Sepete ekle</button></div></div>
-  </article>`;
+  const pct = discPct(p);
+  return '<article class="pcard'+(p.stock?'':' soldout')+'" data-id="'+p.id+'">'
+    + '<div class="picwrap">'
+    + (pct? '<span class="disc-rib">%'+pct+'</span>' : '')
+    + '<img class="pic" src="'+window.CATALOG.imgSrc(p)+'" alt="'+esc(p.name)+'" loading="lazy" data-cat="'+p.cat+'" onerror="window.CATALOG.imgFallback(this)">'
+    + '<button class="fav" aria-label="Favori"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21C5 14 3 11 3 7.5A4.5 4.5 0 0 1 12 6a4.5 4.5 0 0 1 9 1.5C21 11 19 14 12 21z"/></svg></button>'
+    + '</div>'
+    + '<div class="body"><span class="cat">'+catName(p.cat)+'</span><h3>'+esc(p.name)+'</h3>'
+    + '<p>'+esc(p.desc.split('.')[0])+'.</p>'
+    + window.CATALOG.starsRow(p.slug)
+    + '<div class="row">'+priceRow(p)+addBtnHtml(p)+'</div></div>'
+    + '</article>';
 }
 function counts(){
-  const c={all:PRODUCTS.length,kilo:0,sporcu:0,gunluk:0};
-  PRODUCTS.forEach(p=>c[p.cat]++);
+  const c={all:PRODUCTS.length};
+  CATS.forEach(cat=>c[cat.key]=0);
+  PRODUCTS.forEach(p=>{ if(c[p.cat]!==undefined)c[p.cat]++; });
   Object.keys(c).forEach(k=>{const e=document.getElementById('ct-'+k);if(e)e.textContent=c[k];});
 }
 function apply(){
   let list=PRODUCTS.filter(p=>
     (f.cat==='all'||p.cat===f.cat)&&
     (f.goals.length===0||f.goals.some(g=>p.goals.includes(g)))&&
-    (p.rate>=f.rate)&&
     (!f.q||p.name.toLowerCase().includes(f.q))
   );
-  if(f.sort==='rate')list.sort((a,b)=>b.rate-a.rate);
-  else if(f.sort==='name')list.sort((a,b)=>a.name.localeCompare(b.name,'tr'));
+  if(f.sort==='name')list.sort((a,b)=>a.name.localeCompare(b.name,'tr'));
+  else if(f.sort==='priceAsc')list.sort((a,b)=>(a.price||0)-(b.price||0));
+  else if(f.sort==='priceDesc')list.sort((a,b)=>(b.price||0)-(a.price||0));
   else list.sort((a,b)=>b.pop-a.pop);
   grid.innerHTML=list.map(card).join('');
   countEl.textContent=list.length+' ürün';
   empty.hidden=list.length>0;
   bind();
+  syncChips();
 }
 function bind(){
   $$('#grid .add').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();window.cartAddFromBtn(b);}));
@@ -202,41 +263,146 @@ function bind(){
   if(window.refreshFavButtons)window.refreshFavButtons();
 }
 // filters
-$$('input[name=cat]').forEach(r=>r.addEventListener('change',()=>{f.cat=r.value;apply();}));
+$('#catFilters').addEventListener('change',e=>{ if(e.target.name==='cat'){ f.cat=e.target.value; apply(); }});
 $$('.goalf').forEach(c=>c.addEventListener('change',()=>{f.goals=$$('.goalf:checked').map(x=>x.value);apply();}));
-$$('input[name=rate]').forEach(r=>r.addEventListener('change',()=>{f.rate=+r.value;apply();}));
 $('#sort').addEventListener('change',e=>{f.sort=e.target.value;apply();});
-$('#q').addEventListener('input',e=>{f.q=e.target.value.trim().toLowerCase();apply();});
-$('#clearF').addEventListener('click',()=>{f={cat:'all',goals:[],rate:0,sort:'pop',q:''};
-  document.querySelector('input[name=cat][value=all]').checked=true;
+
+/* hızlı hedef çipleri (sortbar) — sidebar Hedef/Kategori ile çift yönlü senkron */
+const GCHIPS=[
+  {k:'kilo',       ic:'⚖️', l:'Kilo vermek',       type:'goal'},
+  {k:'kas',        ic:'💪', l:'Kas & sporcu',      type:'goal'},
+  {k:'enerji',     ic:'⚡', l:'Enerji & canlılık', type:'goal'},
+  {k:'bagisiklik', ic:'🛡️', l:'Bağışıklık desteği',type:'goal'},
+  {k:'atistirma',  ic:'🍫', l:'Ara öğün',          type:'cat'}
+];
+function syncChips(){
+  $$('#goalchips .gchip').forEach(el=>{
+    const on=el.dataset.type==='cat'?(f.cat===el.dataset.k):f.goals.includes(el.dataset.k);
+    el.classList.toggle('on',on);
+    el.setAttribute('aria-pressed',on?'true':'false');
+  });
+}
+(function buildChips(){
+  const box=$('#goalchips'); if(!box)return;
+  box.innerHTML=GCHIPS.map(c=>'<button type="button" class="gchip" data-k="'+c.k+'" data-type="'+c.type+'" aria-pressed="false"><span class="gic">'+c.ic+'</span>'+c.l+'</button>').join('');
+  $$('#goalchips .gchip').forEach(btn=>btn.addEventListener('click',()=>{
+    const k=btn.dataset.k, type=btn.dataset.type;
+    // tek-seçim: en fazla bir çip aktif → her dokunuşta görünür değişim
+    const active = type==='cat' ? (f.cat===k) : (f.goals.length===1 && f.goals[0]===k);
+    if(active){ f.goals=[]; f.cat='all'; }          // aynı çipe tekrar → filtreyi kaldır
+    else if(type==='cat'){ f.cat=k; f.goals=[]; }    // kategori çipi
+    else { f.goals=[k]; f.cat='all'; }               // tek hedef çipi
+    // yan menüyü (Hedef kutuları + Kategori) state ile eşitle
+    $$('.goalf').forEach(cb=>cb.checked=f.goals.includes(cb.value));
+    const r=document.querySelector('input[name=cat][value="'+f.cat+'"]'); if(r)r.checked=true;
+    apply();
+  }));
+})();
+// ürün arama — topbar (#q) ve sortbar (#shopq) tek kaynaktan, anlık filtre
+function setQuery(val){
+  f.q=String(val||'').trim().toLowerCase();
+  const q1=$('#q'), q2=$('#shopq');
+  if(q1&&q1.value!==val)q1.value=val;   // diğer input'u yansıt (kendi yazdığını değiştirmez)
+  if(q2&&q2.value!==val)q2.value=val;
+  apply();
+}
+$('#q').addEventListener('input',e=>setQuery(e.target.value));
+$('#shopq').addEventListener('input',e=>setQuery(e.target.value));
+$('#clearF').addEventListener('click',()=>{f={cat:'all',goals:[],sort:'pop',q:''};
+  const allR=document.querySelector('input[name=cat][value=all]'); if(allR)allR.checked=true;
   $$('.goalf').forEach(c=>c.checked=false);
-  document.querySelector('input[name=rate][value="0"]').checked=true;
-  $('#sort').value='pop';$('#q').value='';apply();toast('Filtreler temizlendi');});
+  $('#sort').value='pop';$('#q').value='';if($('#shopq'))$('#shopq').value='';apply();toast('Filtreler temizlendi');});
 
 // product detail
 const pd=$('#pd');
 function openPd(id){
   const p=PRODUCTS.find(x=>x.id===id);if(!p)return;
-  $('#pd-img').src=p.img;$('#pd-img').alt=p.name;
-  $('#pd-cat').textContent=p.cn;$('#pd-name').textContent=p.name;
-  $('#pd-stars').textContent=star(p.rate)+'  '+p.rate+' ('+p.rev+' değerlendirme)';
+  $('#pd-img').setAttribute('data-cat',p.cat);
+  $('#pd-img').onerror=function(){window.CATALOG.imgFallback(this);};
+  $('#pd-img').src=window.CATALOG.imgSrc(p);$('#pd-img').alt=p.name;
+  $('#pd-cat').textContent=catName(p.cat);$('#pd-name').textContent=p.name;
   $('#pd-desc').textContent=p.desc;
-  $('#pd-specs').innerHTML=p.specs.map(s=>`<div class="r"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> ${s}</div>`).join('');
-  const pb=$('#pd-pricebox'), joinBtn=pd.querySelector('.acts [data-join]'), addBtn=$('#pd-add');
-  if(window.PRICE_PUBLIC){
-    pb.innerHTML='<b style="font-size:1.45rem;color:var(--ink)">'+fmtP(id)+'</b><small style="color:var(--muted)">Örnek fiyat · KDV dahil; kargo siparişte hesaplanır.</small>';
-    if(joinBtn)joinBtn.style.display='none'; if(addBtn)addBtn.className='btn btn-primary';
+  $('#pd-specs').innerHTML='';
+  const pb=$('#pd-pricebox'), joinBtn=pd.querySelector('.acts [data-join]'), addB=$('#pd-add');
+  if(p.stock && p.price){
+    pb.innerHTML='<b style="font-size:1.45rem;color:var(--ink)">'+fmt(p.price)+'</b>'+(p.old?' <span class="oldprice">'+fmt(p.old)+'</span>':'')+'<small style="color:var(--muted);display:block;margin-top:.3rem">Fiyata KDV dahildir; kargo siparişte hesaplanır.</small>';
+    if(addB){addB.className='btn btn-primary';addB.disabled=false;addB.textContent='Sepete ekle';}
   }else{
-    pb.innerHTML='<b>🔒 Fiyat üyelikte görünür</b><small>Kurallar gereği fiyat herkese açık gösterilemez. Üye ol, fiyatı gör ve sipariş ver.</small>';
-    if(joinBtn)joinBtn.style.display=''; if(addBtn)addBtn.className='btn btn-ghost';
+    pb.innerHTML='<b>Şu an stokta yok</b><small style="color:var(--muted);display:block;margin-top:.3rem">Bu ürün için distribütörünle iletişime geçebilirsin.</small>';
+    if(addB){addB.className='btn btn-ghost';addB.disabled=true;addB.textContent='Stok yok';}
   }
-  $('#pd-add').onclick=()=>{window.addToCart({id:p.name.trim().toLowerCase(),name:p.name,price:PRICE[id]||0});};
+  if(joinBtn)joinBtn.style.display='none';
+  $('#pd-add').onclick=()=>{ if(p.stock&&p.price) window.addToCart({id:p.slug,name:p.name,price:p.price}); };
+  loadPdReviews(p.slug);
   pd.hidden=false;document.body.style.overflow='hidden';
+}
+
+/* ---------- gerçek değerlendirme (yorum) sistemi ---------- */
+const fmtDate=s=>{ if(!s)return''; const d=String(s).slice(0,10).split('-'); return d.length===3? d[2]+'.'+d[1]+'.'+d[0] : s; };
+let pdSlug=null, pdPick=0;
+function paintPick(){ const pk=$('#rvPick'); if(!pk)return; pk.querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.v<=pdPick)); }
+async function loadPdReviews(slug){
+  pdSlug=slug; pdPick=0;
+  const wrap=$('#pd-reviews'), st=$('#pd-stars');
+  if(st)st.innerHTML=window.CATALOG.starGlyphs(0)+' <span>yükleniyor…</span>';
+  wrap.innerHTML='<p class="rv-empty">Değerlendirmeler yükleniyor…</p>';
+  let data={reviews:[],avg:0,count:0,mine:null,canReview:false};
+  try{ const r=await fetch('/api/reviews?product='+encodeURIComponent(slug)); if(r.ok)data=await r.json(); }catch(e){}
+  if(pdSlug!==slug)return; // başka ürüne geçildiyse yazma
+  if(st){
+    st.innerHTML = data.count>0
+      ? window.CATALOG.starGlyphs(data.avg)+' <b>'+data.avg.toFixed(1)+'</b> <span>'+data.count+' değerlendirme</span>'
+      : window.CATALOG.starGlyphs(0)+' <span>Henüz değerlendirilmemiş · ilk değerlendiren sen ol</span>';
+  }
+  let html='<h4 class="rv-h4">Değerlendirmeler</h4>';
+  if(data.canReview){
+    pdPick = data.mine ? data.mine.rating : 0;
+    html+='<div class="rv-form">'
+      +'<div class="rv-pick" id="rvPick">'+[1,2,3,4,5].map(v=>'<button type="button" data-v="'+v+'" aria-label="'+v+' yıldız">★</button>').join('')+'</div>'
+      +'<textarea id="rvBody" maxlength="1000" placeholder="Ürünü kullandın mı? Deneyimini birkaç cümleyle paylaş (isteğe bağlı).">'+(data.mine?esc(data.mine.body||''):'')+'</textarea>'
+      +'<button class="btn btn-primary btn-sm" id="rvSubmit" style="margin-top:.55rem">'+(data.mine?'Değerlendirmeni güncelle':'Değerlendirmeni gönder')+'</button>'
+      +'</div>';
+  }else{
+    html+='<div class="rv-login"><p style="margin:0 0 .6rem;color:var(--muted)">Yalnızca üyeler değerlendirme yapabilir — puanlar gerçek müşterilerden gelir.</p><button class="btn btn-primary btn-sm" data-join>Üye ol & değerlendir</button></div>';
+  }
+  if(data.reviews.length){
+    html+='<div class="rv-list">'+data.reviews.map(rv=>
+      '<div class="rv-item"><div class="top"><span class="nm">'+esc(rv.name)+'</span><span class="dt">'+fmtDate(rv.created_at)+'</span></div>'
+      +'<div>'+window.CATALOG.starGlyphs(rv.rating)+'</div>'
+      +(rv.body?'<p class="bd">'+esc(rv.body)+'</p>':'')
+      +'</div>').join('')+'</div>';
+  }else if(data.canReview){
+    html+='<p class="rv-empty">Henüz değerlendirme yok. İlk yorumu sen yaz!</p>';
+  }
+  wrap.innerHTML=html;
+  if(data.canReview){
+    paintPick();
+    $('#rvPick').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{pdPick=+b.dataset.v;paintPick();}));
+    $('#rvSubmit').addEventListener('click',submitReview);
+  }else{
+    wrap.querySelectorAll('[data-join]').forEach(el=>el.onclick=e=>{e.preventDefault();window.openAuth&&window.openAuth({signup:true});});
+  }
+}
+async function submitReview(){
+  if(!pdPick){toast('Lütfen 1-5 yıldız seç');return;}
+  const btn=$('#rvSubmit'), old=btn.textContent; btn.disabled=true; btn.textContent='Gönderiliyor…';
+  try{
+    const r=await fetch('/api/reviews',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({product:pdSlug,rating:pdPick,body:(($('#rvBody')||{}).value||'').trim()})});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok){toast(d.error||'Gönderilemedi');btn.disabled=false;btn.textContent=old;return;}
+    window.CATALOG.setRating(pdSlug,{avg:d.avg,count:d.count});
+    apply();                 // kartlardaki yıldızlar güncellensin
+    loadPdReviews(pdSlug);   // modal yeniden çizilsin
+    toast('Değerlendirmen için teşekkürler!');
+  }catch(e){toast('Bağlantı hatası');btn.disabled=false;btn.textContent=old;}
 }
 pd.querySelectorAll('[data-pdclose]').forEach(b=>b.addEventListener('click',()=>{pd.hidden=true;document.body.style.overflow='';}));
 addEventListener('keydown',e=>{if(e.key==='Escape'&&!pd.hidden){pd.hidden=true;document.body.style.overflow='';}});
 
 counts();apply();
+/* gerçek puan özetini çek, gelince kartları yıldızlarıyla yeniden çiz */
+window.CATALOG.loadSummary().then(()=>apply());
 </script>
 </body>
 </html>

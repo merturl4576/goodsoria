@@ -33,6 +33,9 @@
 .kvkk-line{display:flex;gap:.5rem;font-size:.76rem;color:var(--muted);line-height:1.35;margin:.4rem 0 .9rem;align-items:flex-start}
 .kvkk-line input{margin-top:.15rem;accent-color:var(--brand);flex:none;width:auto}
 .kvkk-line a{color:var(--brand);text-decoration:underline}
+.pay-opts{display:flex;gap:.55rem;flex-wrap:wrap}
+.pay-opt{display:flex;align-items:center;gap:.45rem;font-size:.88rem;font-weight:600;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:.55rem .85rem;cursor:pointer;flex:1;min-width:130px}
+.pay-opt input{accent-color:var(--brand)}
 .cart-empty{text-align:center;padding:2.6rem 1rem;color:var(--muted)}
 .ok-box{text-align:center;padding:2.2rem 1.2rem;max-width:560px;margin:0 auto}
 .ok-box .ok-ic{width:3.6rem;height:3.6rem;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;margin:0 auto 1rem}
@@ -92,9 +95,15 @@
               <div class="field"><label class="lbl" for="co-il">İl</label><input id="co-il" type="text" placeholder="İstanbul"></div>
               <div class="field"><label class="lbl" for="co-ilce">İlçe</label><input id="co-ilce" type="text" placeholder="Kadıköy"></div>
             </div>
+            <div class="field"><label class="lbl">Ödeme yöntemi</label>
+              <div class="pay-opts">
+                <label class="pay-opt"><input type="radio" name="pay" value="kapida" checked> Kapıda ödeme</label>
+                <label class="pay-opt"><input type="radio" name="pay" value="havale"> Havale / EFT</label>
+              </div>
+            </div>
             <label class="kvkk-line"><input type="checkbox" id="co-kvkk"><span>Siparişimin işlenmesi ve teslimatı için iletişim/adres bilgilerimin kullanılmasını kabul ediyorum. <a href="#">KVKK Aydınlatma Metni</a>.</span></label>
             <button class="btn btn-primary btn-block" type="submit">Siparişi Tamamla</button>
-            <p class="fine">Bu bir demo akıştır; gerçek ödeme/tahsilat alınmaz. Ödeme ve teslimat distribütörünle iletişimde netleşir.</p>
+            <p class="fine">Siparişin doğrudan distribütörüne ulaşır. Ödeme kapıda veya havale/EFT ile; teslimat ve tahsilat detayları distribütörünle netleşir.</p>
           </form>
         </div>
       </div>
@@ -112,6 +121,7 @@
         <h2>Siparişin alındı! 🎉</h2>
         <p>Sipariş no: <span class="ono" id="okNo"></span></p>
         <p id="okMsg" style="color:var(--muted)"></p>
+        <div id="okWa" style="margin-top:.6rem"></div>
         <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-top:1rem">
           <a class="btn btn-primary btn-sm" href="magaza.html">Alışverişe devam</a>
           <a class="btn btn-ghost btn-sm" href="platform.html">Ana sayfa</a>
@@ -161,22 +171,24 @@ $('#coForm').addEventListener('submit',async e=>{
   if(!$('#co-kvkk').checked){toast('Devam için onay kutusunu işaretle');return;}
   const il=$('#co-il').value.trim(), ilce=$('#co-ilce').value.trim();
   const fullAddr=adres+(il?', '+il:'')+(ilce?' / '+ilce:'');
+  const mail=$('#co-mail').value.trim();
+  const pay=(document.querySelector('input[name=pay]:checked')||{}).value||'kapida';
+  const btn=$('#coForm button[type=submit]'); btn.disabled=true; const _bt=btn.textContent; btn.textContent='Gönderiliyor…';
+  let res;
+  try{
+    // misafir de olsa sipariş artık DB'ye + distribütöre gider (localStorage değil)
+    const r=await fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',
+      body:JSON.stringify({items:cart,address:fullAddr,name:ad,phone:tel,email:mail,payment_method:pay})});
+    res=await r.json(); if(!r.ok)throw new Error(res.error||'Sipariş oluşturulamadı.');
+  }catch(err){ toast(err.message||'Sipariş hatası'); btn.disabled=false; btn.textContent=_bt; return; }
+  const no=res.order.ono;
   const authed=!!(window.isAuthed&&window.isAuthed());
-  let no='';
-  if(authed){
-    try{
-      const r=await fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({items:cart,address:fullAddr})});
-      const d=await r.json(); if(!r.ok)throw new Error(d.error||'Sipariş oluşturulamadı.');
-      no=d.order.ono;
-    }catch(err){ toast(err.message||'Sipariş hatası'); return; }
-  }else{
-    no='GD-'+Math.floor(100000+Math.random()*900000);
-    try{const o=JSON.parse(localStorage.getItem('goodsoria_orders')||'[]');o.push({no:no,ad:ad,tel:tel,mail:$('#co-mail').value.trim(),adres:fullAddr,items:cart,total:cart.reduce((s,it)=>s+it.price*it.qty,0)});localStorage.setItem('goodsoria_orders',JSON.stringify(o));}catch(err){}
-  }
   saveCart([]);
   wrap.style.display='none'; empty.hidden=true;
   $('#okNo').textContent=no;
-  $('#okMsg').textContent=(ad.split(' ')[0]||'')+', siparişin distribütörüne iletildi. En kısa sürede telefonundan ('+tel+') seninle iletişime geçeceğiz.'+(authed?' Panelinden takip edebilirsin.':'');
+  $('#okMsg').textContent=(ad.split(' ')[0]||'')+', siparişin distribütörüne iletildi. En kısa sürede telefonundan ('+tel+') seninle iletişime geçilecek.'+(authed?' Panelinden takip edebilirsin.':'');
+  const waWrap=$('#okWa');
+  if(waWrap)waWrap.innerHTML=res.wa?'<a class="btn btn-lime btn-sm" href="'+res.wa+'" target="_blank" rel="noopener">📲 WhatsApp ile de bildir</a>':'';
   $('#okCard').hidden=false;
   window.scrollTo({top:0,behavior:'smooth'});
   toast('Siparişin alındı ✓');

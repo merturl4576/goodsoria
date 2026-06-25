@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Beslenme Koçu — Goodsoria · Herbalife Bağımsız Distribütör Platformu</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<meta name="description" content="Hedefini, yaşam tarzını ve bütçeni söyle; yapay zekâ sana özel bir günlük program kursun, mağazadaki Herbalife ürünlerinden tam sana uygun seti önersin.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/diri.css">
+<style>
+/* ---- AI Koç premium ---- */
+.koc-hero{position:relative;overflow:hidden;border-radius:22px;padding:1.6rem 1.7rem;color:#fff;
+  background:radial-gradient(120% 140% at 90% 0%,oklch(0.7 0.18 150/.55),transparent 55%),linear-gradient(135deg,var(--brand-deep,#16623a),var(--brand-deeper,#0d3f25));
+  box-shadow:0 26px 60px -34px rgba(13,63,37,.85);margin-bottom:1.4rem}
+.koc-hero .spark{position:absolute;right:-10px;top:-10px;opacity:.18;transform:rotate(8deg)}
+.koc-hero .badge-ai{display:inline-flex;align-items:center;gap:.4rem;background:oklch(1 0 0/.16);border:1px solid oklch(1 0 0/.25);padding:.28rem .7rem;border-radius:999px;font-size:.74rem;font-weight:700;letter-spacing:.02em;margin-bottom:.7rem}
+.koc-hero h1{margin:.1rem 0 .35rem;font-size:clamp(1.5rem,3vw,2rem);line-height:1.1}
+.koc-hero p{margin:0;max-width:54ch;color:oklch(0.95 0.02 150);font-size:.95rem;line-height:1.5}
+.koc-steps{display:grid;gap:1rem}
+.kstep{background:var(--surface,#fff);border:1px solid var(--line);border-radius:18px;padding:1.05rem 1.15rem}
+.kstep .sh{display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem}
+.kstep .sn{width:1.7rem;height:1.7rem;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:800;font-size:.85rem;flex:none}
+.kstep .st{font-family:"Bricolage Grotesque";font-weight:700;font-size:1rem}
+.kstep .opt{font-weight:500;color:var(--muted);font-size:.82rem}
+.cset{display:flex;flex-wrap:wrap;gap:.5rem}
+.cset .opt-chip{font:inherit;font-weight:600;font-size:.88rem;cursor:pointer;padding:.5rem .9rem;border-radius:12px;border:1.5px solid var(--line);background:var(--bg,#fff);color:var(--ink);transition:.16s;display:inline-flex;align-items:center;gap:.4rem}
+.cset .opt-chip:hover{border-color:var(--brand)}
+.cset .opt-chip[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff;box-shadow:0 6px 16px -8px var(--brand)}
+.koc-msg{width:100%;font:inherit;padding:.7rem .85rem;border:1px solid var(--line);border-radius:12px;background:var(--bg,#fff);color:var(--ink);resize:vertical;min-height:80px;box-sizing:border-box}
+.cart-aware{display:flex;align-items:center;gap:.6rem;background:oklch(0.97 0.025 150);border:1px solid var(--line);border-radius:12px;padding:.65rem .8rem;font-size:.88rem;font-weight:600;color:var(--ink);margin-top:.2rem}
+.cart-aware input{width:auto;accent-color:var(--brand);transform:scale(1.15)}
+.koc-go{display:flex;gap:.8rem;flex-wrap:wrap;align-items:center}
+.koc-go .btn-primary{font-size:1rem;padding:.8rem 1.5rem}
+/* thinking */
+.thinking{display:flex;align-items:center;gap:.7rem;color:var(--muted);font-weight:600;padding:1.6rem 0;justify-content:center}
+.dots{display:inline-flex;gap:.3rem}.dots i{width:.55rem;height:.55rem;border-radius:50%;background:var(--brand);animation:bln 1s infinite ease-in-out}
+.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+@keyframes bln{0%,80%,100%{opacity:.3;transform:translateY(0)}40%{opacity:1;transform:translateY(-5px)}}
+/* result */
+.plan-box{background:linear-gradient(160deg,oklch(0.97 0.035 150),var(--surface,#fff));border:1px solid var(--line);border-radius:18px;padding:1.2rem 1.3rem;margin-bottom:1.1rem}
+.plan-box .ph{display:flex;align-items:center;gap:.6rem;font-weight:800;font-family:"Bricolage Grotesque";font-size:1.08rem;margin-bottom:.5rem}
+.plan-box .ph .ai-av{width:2rem;height:2rem;border-radius:9px;display:grid;place-items:center;background:linear-gradient(150deg,var(--lime),var(--brand));color:var(--brand-deeper,#11331f);flex:none}
+.plan-box p{margin:.2rem 0;line-height:1.55}
+.tips{list-style:none;padding:0;margin:.9rem 0 0;display:grid;gap:.5rem}
+.tips li{display:flex;gap:.55rem;align-items:flex-start;font-size:.92rem;line-height:1.5}
+.tips li svg{flex:none;color:var(--brand);margin-top:3px}
+.cart-advice{display:flex;gap:.6rem;align-items:flex-start;background:oklch(0.98 0.03 85);border:1px solid oklch(0.85 0.08 85);border-radius:14px;padding:.85rem 1rem;margin-bottom:1.1rem;font-size:.9rem;line-height:1.5}
+.cart-advice svg{flex:none;color:#c79a30;margin-top:2px}
+/* program özet + set ekle */
+.setbar{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;background:var(--brand-deeper,#0d3f25);color:#fff;border-radius:16px;padding:1rem 1.2rem;margin:.2rem 0 1.2rem}
+.setbar .si b{font-family:"Bricolage Grotesque";font-size:1.35rem;display:block}
+.setbar .si small{color:oklch(0.9 0.03 150);font-size:.8rem}
+.setbar .btn{background:var(--lime);color:var(--lime-ink,#13331c);font-weight:800;border:0}
+/* günlük ritim timeline */
+.rhythm{position:relative;margin:.2rem 0 .4rem;padding-left:1.6rem}
+.rhythm::before{content:"";position:absolute;left:.55rem;top:.4rem;bottom:.4rem;width:2px;background:linear-gradient(var(--brand),var(--line))}
+.rslot{position:relative;margin-bottom:1.1rem}
+.rslot .rdot{position:absolute;left:-1.42rem;top:.1rem;width:1.5rem;height:1.5rem;border-radius:50%;background:var(--surface,#fff);border:2px solid var(--brand);display:grid;place-items:center;font-size:.8rem}
+.rslot .rl{font-family:"Bricolage Grotesque";font-weight:700;font-size:.95rem;margin-bottom:.5rem;color:var(--ink)}
+.rcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:.8rem}
+.rcard{display:flex;gap:.7rem;background:var(--surface,#fff);border:1px solid var(--line);border-radius:14px;padding:.6rem;align-items:flex-start}
+.rcard img{width:64px;height:64px;border-radius:10px;object-fit:cover;flex:none}
+.rcard .rb{min-width:0;display:flex;flex-direction:column;flex:1}
+.rcard h4{margin:0 0 .15rem;font-size:.9rem;line-height:1.2}
+.rcard .rr{font-size:.78rem;color:var(--muted);line-height:1.4;margin:0 0 .45rem}
+.rcard .rf{display:flex;align-items:center;justify-content:space-between;gap:.4rem;margin-top:auto}
+.rcard .rp{font-weight:800;font-size:.92rem;color:var(--ink)}
+.rcard .miniadd{font:inherit;font-weight:700;font-size:.76rem;border:1.5px solid var(--brand);color:var(--brand);background:transparent;border-radius:8px;padding:.28rem .55rem;cursor:pointer;transition:.15s}
+.rcard .miniadd:hover{background:var(--brand);color:#fff}
+.rcard .miniadd.added{background:var(--brand);color:#fff;border-color:var(--brand)}
+.coach-disc{font-size:.76rem;color:var(--muted);margin-top:1rem;line-height:1.5}
+.coach-soon{text-align:center;padding:2.2rem 1.2rem;color:var(--muted)}
+/* ---- lead kapısı modal ---- */
+.lgate{position:fixed;inset:0;z-index:140;display:none;align-items:center;justify-content:center;padding:1.2rem;background:oklch(0.22 0.03 150/.55);backdrop-filter:blur(3px)}
+.lgate.show{display:flex}
+.lgate .gcard{background:var(--surface,#fff);border-radius:20px;max-width:430px;width:100%;padding:1.5rem 1.5rem 1.35rem;box-shadow:0 34px 80px -34px rgba(0,0,0,.55);position:relative;animation:gpop .22s ease}
+@keyframes gpop{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+.lgate .gx{position:absolute;right:.85rem;top:.7rem;border:0;background:transparent;font-size:1.5rem;line-height:1;cursor:pointer;color:var(--muted)}
+.lgate .gi{width:2.7rem;height:2.7rem;border-radius:13px;background:linear-gradient(150deg,var(--lime),var(--brand));display:grid;place-items:center;color:#11331f;margin-bottom:.75rem}
+.lgate h3{margin:.1rem 0 .35rem;font-family:"Bricolage Grotesque";font-size:1.3rem;line-height:1.15}
+.lgate p.lsub{margin:0 0 1.05rem;color:var(--muted);font-size:.9rem;line-height:1.5}
+.lgate label.fld{display:block;margin-bottom:.7rem}
+.lgate label.fld>span{display:block;font-size:.78rem;font-weight:700;margin-bottom:.28rem;color:var(--ink)}
+.lgate label.fld>span .o{font-weight:500;color:var(--muted)}
+.lgate .fld input{width:100%;font:inherit;padding:.62rem .8rem;border:1px solid var(--line);border-radius:10px;box-sizing:border-box;background:var(--bg,#fff);color:var(--ink)}
+.lgate .fld input:focus{outline:2px solid var(--brand);outline-offset:0;border-color:var(--brand)}
+.lgate .kv{display:flex;gap:.55rem;align-items:flex-start;font-size:.8rem;color:var(--muted);line-height:1.45;margin:.25rem 0 1rem;cursor:pointer}
+.lgate .kv input{margin-top:2px;accent-color:var(--brand);flex:none}
+.lgate .gerr{color:#c0392b;font-size:.82rem;margin:-.3rem 0 .7rem;display:none}
+.lgate .btn-primary{width:100%;justify-content:center;font-size:1rem;padding:.8rem}
+.lgate .signin-row{text-align:center;font-size:.82rem;color:var(--muted);margin-top:.85rem}
+.lgate .signin-row a{color:var(--brand);font-weight:700;cursor:pointer}
+.lgate .perk{display:flex;gap:.5rem;align-items:center;font-size:.82rem;color:var(--ink);background:oklch(0.97 0.03 150);border-radius:10px;padding:.5rem .7rem;margin-bottom:.9rem}
+.lgate .perk svg{color:var(--brand);flex:none}
+/* ---- 30 günlük program ---- */
+.prog-wrap{margin-top:1.5rem}
+.prog-head{background:radial-gradient(120% 140% at 90% 0%,oklch(0.7 0.18 150/.4),transparent 55%),linear-gradient(135deg,var(--brand-deep,#16623a),var(--brand-deeper,#0d3f25));color:#fff;border-radius:18px;padding:1.2rem 1.3rem;display:flex;gap:1rem;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.prog-head .ph-t h2{margin:0;font-size:1.22rem;font-family:"Bricolage Grotesque"}
+.prog-head .ph-t p{margin:.25rem 0 0;font-size:.85rem;color:oklch(0.93 0.03 150);max-width:46ch}
+.prog-head .btn-pdf{background:var(--lime);color:var(--lime-ink,#13331c);font-weight:800;border:0;display:inline-flex;align-items:center;gap:.45rem;white-space:nowrap}
+.prog-head .btn-pdf:disabled{opacity:.6;cursor:default}
+.weeks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.7rem;margin:1.05rem 0}
+.wk{background:var(--surface,#fff);border:1px solid var(--line);border-left:4px solid var(--brand);border-radius:12px;padding:.7rem .85rem}
+.wk b{font-family:"Bricolage Grotesque";font-size:.78rem;color:var(--brand);display:block;margin-bottom:.2rem;letter-spacing:.02em}
+.wk span{font-size:.86rem;line-height:1.35}
+.days{display:grid;grid-template-columns:repeat(auto-fill,minmax(225px,1fr));gap:.7rem}
+.days .hide{display:none}
+.dcard{background:var(--surface,#fff);border:1px solid var(--line);border-radius:14px;padding:.8rem .9rem}
+.dcard .dn{display:inline-grid;place-items:center;min-width:2.4rem;height:1.7rem;padding:0 .45rem;border-radius:8px;background:var(--brand);color:#fff;font-weight:800;font-size:.78rem;margin-bottom:.55rem;font-family:"Bricolage Grotesque"}
+.dcard ul{list-style:none;margin:0;padding:0;display:grid;gap:.4rem}
+.dcard li{font-size:.82rem;line-height:1.38;display:flex;gap:.45rem}
+.dcard li em{font-style:normal;flex:none}
+.prog-more{display:flex;justify-content:center;margin:1.05rem 0 .2rem}
+.thinking.sm{padding:1.2rem 0;font-size:.92rem;justify-content:flex-start}
+/* karar çubuğu (beğen / yeniden üret) */
+.decide{background:linear-gradient(160deg,oklch(0.97 0.035 150),var(--surface,#fff));border:1px solid var(--line);border-radius:16px;padding:1.1rem 1.2rem;margin:.4rem 0 1.1rem}
+.decide .dq{font-size:.95rem;margin-bottom:.85rem;line-height:1.5}
+.decide .dbtns{display:flex;gap:.7rem;flex-wrap:wrap}
+.decide .rq{opacity:.85;font-weight:600}
+</style>
+</head>
+<body data-page="koc">
+
+<div class="compliance"><div class="in">
+  <b>Herbalife® Bağımsız Distribütör</b><span class="sep">•</span><span>Abdoul Raouf Savadogo</span>
+  <span class="sep">•</span><span>İstanbul</span><span class="sep">•</span><span>0500 000 00 00</span>
+  <span class="badge"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Orijinal Herbalife ürünleri</span>
+</div></div>
+
+<div class="app">
+  <aside class="sidebar"></aside>
+  <div class="content">
+    <header class="topbar">
+      <button class="icbtn menubtn" id="menuBtn" aria-label="Menü"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <label class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input id="q" type="search" placeholder="Ara…" autocomplete="off"><kbd>/</kbd></label>
+      <div class="tb-actions">
+        <button class="icbtn" id="cartBtn" aria-label="Sepet"><span class="cartcount" id="cc">0</span><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg></button>
+        <button class="btn btn-primary btn-sm" data-join>Giriş / Üye ol</button>
+      </div>
+    </header>
+
+    <main>
+      <div class="crumb"><a href="platform.html">Ana Sayfa</a><span class="s">/</span><span>AI Beslenme Koçu</span></div>
+
+      <div class="koc-hero">
+        <span class="spark"><svg width="150" height="150" viewBox="0 0 24 24" fill="#fff"><path d="M9 2 11 7.5 16.5 9.5 11 11.5 9 17 7 11.5 1.5 9.5 7 7.5z"/></svg></span>
+        <span class="badge-ai"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 3 10.4 7.1 14.5 8.5 10.4 9.9 9 14 7.6 9.9 3.5 8.5 7.6 7.1z"/></svg> Yapay zekâ destekli</span>
+        <h1>Sana özel beslenme programını kuralım</h1>
+        <p>Hedefini, yaşam tarzını ve bütçeni söyle; günlük ritmine yerleşen, mağazadaki gerçek Herbalife ürünlerinden oluşan tam sana uygun bir set önereyim.</p>
+      </div>
+
+      <section class="koc-steps">
+        <div class="kstep" data-reveal>
+          <div class="sh"><span class="sn">1</span><span class="st">Hedefin ne?</span></div>
+          <div class="cset" id="goals">
+            <button class="opt-chip" data-goal="kilo" aria-pressed="false">⚖️ Kilo vermek</button>
+            <button class="opt-chip" data-goal="kas" aria-pressed="false">💪 Kas & form</button>
+            <button class="opt-chip" data-goal="enerji" aria-pressed="false">⚡ Enerji & canlılık</button>
+            <button class="opt-chip" data-goal="sindirim" aria-pressed="false">🌿 Sindirim & hafiflik</button>
+            <button class="opt-chip" data-goal="genel" aria-pressed="false">🌱 Genel sağlık</button>
+          </div>
+        </div>
+
+        <div class="kstep" data-reveal>
+          <div class="sh"><span class="sn">2</span><span class="st">Yaşam tarzın <span class="opt">· birden fazla seçebilirsin</span></span></div>
+          <div class="cset" id="life">
+            <button class="opt-chip" data-life="masabasi" aria-pressed="false">💻 Masa başı / hareketsiz</button>
+            <button class="opt-chip" data-life="spor" aria-pressed="false">🏃 Düzenli spor</button>
+            <button class="opt-chip" data-life="ogun-atla" aria-pressed="false">⏱️ Öğün atlıyorum</button>
+            <button class="opt-chip" data-life="tatli" aria-pressed="false">🍫 Tatlı krizleri</button>
+            <button class="opt-chip" data-life="az-su" aria-pressed="false">💧 Az su içerim</button>
+            <button class="opt-chip" data-life="uyku" aria-pressed="false">😴 Uyku düzensiz</button>
+            <button class="opt-chip" data-life="sindirim" aria-pressed="false">🌿 Sindirim hassas</button>
+            <button class="opt-chip" data-life="bagisiklik" aria-pressed="false">🛡️ Bağışıklık desteği</button>
+          </div>
+        </div>
+
+        <div class="kstep" data-reveal>
+          <div class="sh"><span class="sn">3</span><span class="st">Bütçen / program boyutu</span></div>
+          <div class="cset" id="budget">
+            <button class="opt-chip" data-budget="ekonomik" aria-pressed="false">💸 Ekonomik başlangıç</button>
+            <button class="opt-chip" data-budget="dengeli" aria-pressed="false">⚖️ Dengeli</button>
+            <button class="opt-chip" data-budget="kapsamli" aria-pressed="false">⭐ Kapsamlı program</button>
+          </div>
+        </div>
+
+        <div class="kstep" data-reveal>
+          <div class="sh"><span class="sn">4</span><span class="st">Eklemek istediğin <span class="opt">· opsiyonel</span></span></div>
+          <textarea class="koc-msg" id="msg" maxlength="800" placeholder="Örn: Sabah kahvaltıya vaktim yok, akşamları atıştırıyorum, laktoz hassasiyetim var, 2 ay içinde 6 kilo vermek istiyorum."></textarea>
+          <label class="cart-aware" id="cartAware" hidden><input type="checkbox" id="useCart" checked> <span id="cartAwareTxt">Sepetimdeki ürünleri de değerlendir</span></label>
+        </div>
+
+        <div class="koc-go">
+          <button class="btn btn-primary" id="goBtn"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" style="margin-right:.45rem;vertical-align:-3px"><path d="M9 3 10.4 7.1 14.5 8.5 10.4 9.9 9 14 7.6 9.9 3.5 8.5 7.6 7.1z"/></svg>Bana özel programı oluştur</button>
+          <span class="sub" style="margin:0">Birkaç saniye sürer · ücretsiz.</span>
+        </div>
+      </section>
+
+      <section id="result" hidden style="margin-top:1.5rem"></section>
+    </main>
+
+    <footer><div class="fin">
+      <div class="foot-top">
+        <div><div class="foot-brand">Goodsoria</div><p style="margin-top:.7rem;color:oklch(0.8 0.03 140);max-width:38ch">Herbalife ürün mağazası, kişisel ürün bulucu, AI beslenme koçu ve topluluk — tek platformda.</p></div>
+        <div><h4>Platform</h4><a href="magaza.html">Mağaza</a><a href="bulucu.html">Ürün Bulucu</a><a href="koc.html">AI Koç</a><a href="topluluk.html">Topluluk</a></div>
+        <div><h4>Hesap</h4><a href="#" data-join>Üye ol</a><a href="#" data-join>Giriş yap</a><a href="panel.html">Panelim</a><a href="sepet.html">Sepetim</a></div>
+        <div><h4>Bilgi</h4><a href="#">Ortalama Kazanç Beyanı</a><a href="#">KVKK & Gizlilik</a><a href="#">İletişim</a><a href="https://www.herbalife.com/tr-tr" target="_blank" rel="noopener">Resmî Herbalife sitesi</a></div>
+      </div>
+      <div class="foot-legal">
+        <p>Bu internet sitesi bir <b>Herbalife Bağımsız Distribütörü</b> (Abdoul Raouf Savadogo · İstanbul · 0500 000 00 00) tarafından işletilmektedir ve Herbalife'ın resmî sitesi değildir.</p>
+        <p style="margin-top:.6rem"><b>Sağlık bildirimi:</b> AI Koç önerileri genel bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sonuçlar kişiden kişiye değişir; dengeli beslenme ve düzenli aktiviteyle birlikte değerlendirilmelidir.</p>
+        <p style="margin-top:.6rem">© 2026 Goodsoria. Herbalife ve ürün adları, Herbalife International, Inc.'in ticari markalarıdır.</p>
+      </div>
+    </div></footer>
+  </div>
+</div>
+
+<nav class="botnav"></nav>
+<div class="drawer" id="drawer"><div class="scrim" data-dclose></div><div class="panel"></div></div>
+
+<!-- lead kapısı: 30 günlük PDF programı için -->
+<div class="lgate" id="lgate" role="dialog" aria-modal="true" aria-labelledby="lgTitle">
+  <div class="gcard">
+    <button class="gx" id="lgClose" aria-label="Kapat">&times;</button>
+    <span class="gi"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9 3 10.4 7.1 14.5 8.5 10.4 9.9 9 14 7.6 9.9 3.5 8.5 7.6 7.1z"/></svg></span>
+    <h3 id="lgTitle">30 günlük programın hazır olmak üzere</h3>
+    <p class="lsub">Sana özel günü gününe takvimi (beslenme + ürün kullanımı + hafif hareket + motivasyon) <b>PDF olarak</b> hazırlayıp gönderelim. Nereye ulaşalım?</p>
+    <div class="perk"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Ücretsiz · spam yok · istediğin an iptal</div>
+    <form id="lgForm" novalidate>
+      <label class="fld"><span>Adın</span><input type="text" id="lgName" autocomplete="name" placeholder="Örn: Ayşe" maxlength="120"></label>
+      <label class="fld"><span>E-posta</span><input type="email" id="lgMail" autocomplete="email" placeholder="ornek@eposta.com" maxlength="160"></label>
+      <label class="fld"><span>Telefon <span class="o">· opsiyonel</span></span><input type="tel" id="lgPhone" autocomplete="tel" placeholder="05xx xxx xx xx" maxlength="40"></label>
+      <div class="gerr" id="lgErr"></div>
+      <label class="kv"><input type="checkbox" id="lgKvkk"> <span>Bilgilerimin KVKK kapsamında, bana özel program ve bilgilendirme amacıyla işlenmesini ve distribütörün benimle iletişime geçmesini onaylıyorum.</span></label>
+      <button type="submit" class="btn btn-primary" id="lgSubmit">Programımı oluştur →</button>
+      <div class="signin-row">Zaten üye misin? <a id="lgSignin">Giriş yap</a> · anında geç</div>
+    </form>
+  </div>
+</div>
+
+<!-- yeniden üret: feedback -->
+<div class="lgate" id="fbModal" role="dialog" aria-modal="true" aria-labelledby="fbTitle">
+  <div class="gcard">
+    <button class="gx" id="fbClose" aria-label="Kapat">&times;</button>
+    <span class="gi" style="font-size:1.3rem">🔄</span>
+    <h3 id="fbTitle">Neyi değiştirelim?</h3>
+    <p class="lsub">Önerini sana göre güncelleyeyim — birini seç ya da kendi sözlerinle yaz.</p>
+    <div class="cset" id="fbChips" style="margin-bottom:.8rem">
+      <button type="button" class="opt-chip" aria-pressed="false">Daha ekonomik</button>
+      <button type="button" class="opt-chip" aria-pressed="false">Farklı ürünler</button>
+      <button type="button" class="opt-chip" aria-pressed="false">Daha çok protein</button>
+      <button type="button" class="opt-chip" aria-pressed="false">Vejetaryen</button>
+      <button type="button" class="opt-chip" aria-pressed="false">Daha az ürün</button>
+    </div>
+    <textarea class="koc-msg" id="fbNote" maxlength="400" placeholder="İstersen kendi sözlerinle yaz…"></textarea>
+    <button class="btn btn-primary" id="fbGo" style="width:100%;margin-top:.8rem">Yeniden üret</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="assets/diri.js"></script>
+<script src="assets/catalog.js"></script>
+<script>
+const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const fmt=n=>(n||0).toLocaleString('tr-TR')+' ₺';
+const WHEN_META={'sabah':{i:'☀️',l:'Sabah'},'ara öğün':{i:'🍎',l:'Ara öğün'},'öğle':{i:'🍽️',l:'Öğle'},'akşam':{i:'🌙',l:'Akşam'},'gün boyu':{i:'💧',l:'Gün boyu'}};
+const WHEN_ORDER=['sabah','ara öğün','öğle','akşam','gün boyu'];
+
+let goal=null, budget=null, life=[];
+function single(wrapId,getSet){
+  $$('#'+wrapId+' .opt-chip').forEach(c=>c.addEventListener('click',()=>{
+    const on=c.getAttribute('aria-pressed')==='true';
+    $$('#'+wrapId+' .opt-chip').forEach(x=>x.setAttribute('aria-pressed','false'));
+    getSet(on?null:c.dataset[wrapId==='goals'?'goal':'budget']);
+    if(!on)c.setAttribute('aria-pressed','true');
+  }));
+}
+single('goals',v=>goal=v);
+single('budget',v=>budget=v);
+$$('#life .opt-chip').forEach(c=>c.addEventListener('click',()=>{
+  const on=c.getAttribute('aria-pressed')==='true';
+  c.setAttribute('aria-pressed',(!on).toString());
+  life=$$('#life .opt-chip[aria-pressed=true]').map(x=>x.dataset.life);
+}));
+
+/* sepet farkındalığı */
+function refreshCartAware(){
+  const cart=(window.getCart&&window.getCart())||[];
+  const el=$('#cartAware');
+  if(cart.length){ el.hidden=false; $('#cartAwareTxt').textContent='Sepetimdeki '+cart.length+' ürünü de değerlendir'; }
+  else el.hidden=true;
+}
+refreshCartAware();
+
+let LAST=null, PROGRAM=null, LEAD=null, lastBase=null, regenLeft=3;
+const result=$('#result'), goBtn=$('#goBtn');
+const GOAL_LABELS={kilo:'Kilo vermek',kas:'Kas & form',enerji:'Enerji & canlılık',sindirim:'Sindirim & hafiflik',genel:'Genel sağlık'};
+
+/* ---------- lead kapısı (30 günlük PDF için) ---------- */
+const lgate=$('#lgate'); let _leadResolve=null;
+const mailRe=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+function openLeadGate(){
+  $('#lgErr').style.display='none';
+  lgate.classList.add('show'); document.body.style.overflow='hidden';
+  setTimeout(()=>{ const n=$('#lgName'); if(n)n.focus(); },60);
+  return new Promise(res=>{ _leadResolve=res; });
+}
+function closeLeadGate(val){
+  lgate.classList.remove('show'); document.body.style.overflow='';
+  const r=_leadResolve; _leadResolve=null; if(r)r(val||null);
+}
+$('#lgClose').addEventListener('click',()=>closeLeadGate(null));
+lgate.addEventListener('click',e=>{ if(e.target===lgate)closeLeadGate(null); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&lgate.classList.contains('show'))closeLeadGate(null); });
+$('#lgSignin').addEventListener('click',()=>{ closeLeadGate(null); const j=document.querySelector('.topbar [data-join]')||document.querySelector('[data-join]'); if(j)j.click(); });
+$('#lgForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const name=$('#lgName').value.trim(), mail=$('#lgMail').value.trim(), phone=$('#lgPhone').value.trim(), kvkk=$('#lgKvkk').checked;
+  const err=$('#lgErr');
+  if(!name){ err.textContent='Lütfen adını yaz.'; err.style.display='block'; $('#lgName').focus(); return; }
+  if(!mailRe.test(mail)){ err.textContent='Geçerli bir e-posta gir.'; err.style.display='block'; $('#lgMail').focus(); return; }
+  if(!kvkk){ err.textContent='Devam için KVKK onayı gerekli.'; err.style.display='block'; return; }
+  closeLeadGate({name,email:mail,phone,kvkk:true});
+});
+
+function soonHtml(){ return '<div class="kstep coach-soon"><p style="font-size:1.05rem;font-weight:700;color:var(--ink)">AI Koç çok yakında ✨</p><p>Distribütör yapay zekâ anahtarını eklediğinde aktif olacak. O zamana kadar <a href="bulucu.html" style="color:var(--brand);font-weight:700">Ürün Bulucu</a>\'yu deneyebilirsin.</p></div>'; }
+
+/* ---------- ana akış (iki aşamalı) ---------- */
+async function run(retried){
+  if(!goal && !life.length && !$('#msg').value.trim()){ toast('En az bir hedef ya da yaşam tarzı seç'); return; }
+  // lead kapısı — üye değilse aç (üye anında geçer). retry'da eldeki lead'i koru.
+  if(!retried){
+    LEAD=null; regenLeft=3;       // yeni gönderim → yeniden üret hakkı sıfırlanır
+    if(!(window.isAuthed&&window.isAuthed())){
+      const lead=await openLeadGate();
+      if(!lead) return;          // vazgeçti
+      LEAD=lead;
+    }
+  }
+  const cart=(window.getCart&&window.getCart())||[];
+  const useCart=$('#useCart')&&$('#useCart').checked&&cart.length;
+  goBtn.disabled=true; const _t=goBtn.innerHTML; goBtn.innerHTML='Hazırlanıyor…';
+  result.hidden=false; PROGRAM=null;
+  result.innerHTML='<div class="kstep"><div class="thinking">Koçun senin için planı kuruyor <span class="dots"><i></i><i></i><i></i></span></div></div>';
+  result.scrollIntoView({behavior:'smooth',block:'start'});
+  const base={ goal:goal||'', budget:budget||'', lifestyle:life, message:$('#msg').value.trim() };
+  lastBase=base;
+  const leadFields = LEAD ? {name:LEAD.name,email:LEAD.email,phone:LEAD.phone,kvkk:true} : {};
+  try{
+    const r=await fetch('/api/coach',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify(Object.assign({mode:'quick'},base,leadFields,{
+      cart: useCart ? cart.map(i=>({name:i.name,qty:i.qty})) : []
+    }))});
+    const d=await r.json().catch(()=>({}));
+    if(r.status===503){ result.innerHTML=soonHtml(); return; }
+    if(r.status===400 && d.needLead){ goBtn.disabled=false; goBtn.innerHTML=_t; const lead=await openLeadGate(); if(!lead){ result.hidden=true; return; } LEAD=lead; return run(true); }
+    if(!r.ok){ result.innerHTML='<div class="kstep coach-soon"><p>'+esc(d.error||'Bir şeyler ters gitti, tekrar dene.')+'</p></div>'; return; }
+    LAST=d; renderResult(d);     // karar çubuğu çıkar; pahalı program yalnız "Beğendim"de
+  }catch(e){ result.innerHTML='<div class="kstep coach-soon"><p>Bağlantı hatası, tekrar dene.</p></div>'; }
+  finally{ goBtn.disabled=false; goBtn.innerHTML=_t; }
+}
+
+function miniCard(p){
+  return '<div class="rcard"><img src="'+esc(p.img)+'" alt="'+esc(p.name)+'" loading="lazy" data-cat="'+esc(p.cat)+'" onerror="window.CATALOG.imgFallback(this)">'
+    +'<div class="rb"><h4>'+esc(p.name)+'</h4><p class="rr">'+esc(p.reason)+'</p>'
+    +'<div class="rf"><span class="rp">'+fmt(p.price)+'</span>'
+    +'<button class="miniadd" data-slug="'+esc(p.slug)+'" data-name="'+esc(p.name)+'" data-price="'+p.price+'">+ Sepete</button></div></div></div>';
+}
+function progLoadingHtml(){ return '<div class="thinking sm">📅 30 günlük takvimin hazırlanıyor… <span class="dots"><i></i><i></i><i></i></span></div>'; }
+
+function renderResult(d){
+  const prods=d.products||[];
+  const total=prods.reduce((s,p)=>s+(p.price||0),0);
+  let rhythm='';
+  WHEN_ORDER.forEach(w=>{
+    const inSlot=prods.filter(p=>p.when===w);
+    if(!inSlot.length)return;
+    const m=WHEN_META[w];
+    rhythm+='<div class="rslot"><span class="rdot">'+m.i+'</span><div class="rl">'+m.l+'</div><div class="rcards">'+inSlot.map(miniCard).join('')+'</div></div>';
+  });
+  const tips=(d.tips||[]).map(t=>'<li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>'+esc(t)+'</span></li>').join('');
+  result.innerHTML=
+    '<div class="plan-box"><div class="ph"><span class="ai-av"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M9 3 10.4 7.1 14.5 8.5 10.4 9.9 9 14 7.6 9.9 3.5 8.5 7.6 7.1z"/></svg></span> Senin için planın</div>'
+    + '<p>'+esc(d.plan)+'</p>'+(tips?'<ul class="tips">'+tips+'</ul>':'')+'</div>'
+    + (d.cartAdvice?'<div class="cart-advice"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg><span><b>Sepetin hakkında:</b> '+esc(d.cartAdvice)+'</span></div>':'')
+    + (prods.length?(
+        '<div class="setbar"><div class="si"><b>Sana özel set · '+prods.length+' ürün</b><small>Toplam '+fmt(total)+' · günlük ritmine göre seçildi</small></div>'
+        + '<button class="btn" id="addAll">🛒 Tüm seti sepete ekle</button></div>'
+        + '<div class="sec-head" style="margin:.2rem 0 .7rem"><div><span class="eye">Günlük ritmin</span><h2 style="margin-top:.35rem;font-size:1.25rem">Programın gün içine böyle yayılıyor</h2></div></div>'
+        + '<div class="rhythm">'+rhythm+'</div>'
+      ):'')
+    + '<div class="decide" id="decideBar">'
+    +   '<div class="dq">Bu plan sana uygun mu? Beğenirsen sana özel <b>30 günlük takvim programını</b> kurayım — kaydedip her günü işaretleyebilir, sadakat puanı kazanır, PDF indirebilirsin.</div>'
+    +   '<div class="dbtns">'
+    +     '<button class="btn btn-primary" id="likeBtn">👍 Beğendim → 30 günlük programı kur</button>'
+    +     '<button class="btn btn-ghost" id="regenBtn">🔄 Yeniden üret <span class="rq">(kalan: '+regenLeft+')</span></button>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="prog-wrap" id="progZone" hidden></div>'
+    + '<p class="coach-disc">'+esc(d.disclaimer||'')+(d.model?' · <span style="opacity:.75">'+esc(d.model)+' ile</span>':'')+'</p>';
+
+  result.querySelectorAll('.miniadd').forEach(b=>b.addEventListener('click',()=>{
+    window.addToCart({id:b.dataset.slug,name:b.dataset.name,price:+b.dataset.price});
+    b.classList.add('added'); b.textContent='✓ Eklendi';
+  }));
+  const addAll=$('#addAll');
+  if(addAll)addAll.addEventListener('click',()=>{
+    prods.forEach(p=>window.addToCart({id:p.slug,name:p.name,price:p.price}));
+    toast(prods.length+' ürünlük set sepete eklendi ✓');
+    addAll.textContent='✓ Set sepete eklendi';
+    refreshCartAware();
+  });
+  const likeBtn=$('#likeBtn'); if(likeBtn)likeBtn.addEventListener('click',generateProgram);
+  const regenBtn=$('#regenBtn'); if(regenBtn)regenBtn.addEventListener('click',openFeedback);
+}
+
+function dayCardHtml(d){
+  return '<div class="dcard"><span class="dn">'+esc(d.day)+'. gün</span><ul>'
+    +'<li><em>🥗</em><span>'+esc(d.nutrition)+'</span></li>'
+    +'<li><em>🌿</em><span>'+esc(d.product)+'</span></li>'
+    +'<li><em>🚶</em><span>'+esc(d.movement)+'</span></li>'
+    +'<li><em>✨</em><span>'+esc(d.motivation)+'</span></li></ul></div>';
+}
+
+/* ---------- "Beğendim" → 30 günlük programı üret (pahalı, 1 kez) ---------- */
+async function generateProgram(){
+  const zone=$('#progZone'), decide=$('#decideBar');
+  if(decide)decide.querySelectorAll('button').forEach(b=>b.disabled=true);
+  zone.hidden=false; zone.innerHTML=progLoadingHtml();
+  zone.scrollIntoView({behavior:'smooth',block:'start'});
+  const setProducts=((LAST&&LAST.products)||[]).map(p=>p.name);
+  const payload=Object.assign({mode:'program'},lastBase,{setProducts, name:(LEAD&&LEAD.name)||((LAST&&LAST.person&&LAST.person.name)||'')});
+  try{
+    const r=await fetch('/api/coach',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify(payload)});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok || !d.program || !(d.program.days||[]).length){
+      zone.innerHTML='<div class="kstep coach-soon"><p>Program oluşturulamadı.</p><button class="btn btn-primary btn-sm" id="progRetry">Tekrar dene</button></div>';
+      const rt=$('#progRetry'); if(rt)rt.addEventListener('click',generateProgram);
+      if(decide)decide.querySelectorAll('button').forEach(b=>b.disabled=false);
+      return;
+    }
+    PROGRAM=d.program; if(decide)decide.remove(); renderProgramPreview();
+  }catch(e){ zone.innerHTML='<div class="kstep coach-soon"><p>Bağlantı hatası.</p></div>'; if(decide)decide.querySelectorAll('button').forEach(b=>b.disabled=false); }
+}
+function renderProgramPreview(){
+  const zone=$('#progZone'); if(!zone||!PROGRAM)return;
+  const weeks=PROGRAM.weeks||[], days=PROGRAM.days||[];
+  const wkHtml=weeks.map(w=>'<div class="wk"><b>'+esc(w.week)+'. HAFTA</b><span>'+esc(w.theme)+'</span></div>').join('');
+  const previewHtml=days.slice(0,6).map(dayCardHtml).join('');
+  const rest=Math.max(0,days.length-6);
+  zone.innerHTML=
+    '<div class="prog-head"><div class="ph-t"><h2>📅 30 günlük programın hazır</h2><p>Beğendiysen hesabına kaydet — her günü takvimde işaretle, sadakat puanı kazan. PDF olarak da indirebilirsin.</p></div>'
+    + '<div style="display:flex;gap:.6rem;flex-wrap:wrap"><button class="btn btn-pdf" id="saveBtn">💾 Kaydet & takvime geçir</button><button class="btn btn-ghost btn-sm" id="pdfBtn">⬇️ PDF indir</button></div></div>'
+    + (weeks.length?'<div class="weeks">'+wkHtml+'</div>':'')
+    + '<div class="days">'+previewHtml+'</div>'
+    + (rest?'<div class="prog-more"><span class="sub">…ve '+rest+' gün daha. Kaydedince tamamı takviminde gün gün açılır.</span></div>':'');
+  $('#pdfBtn').addEventListener('click',downloadPdf);
+  $('#saveBtn').addEventListener('click',saveProgram);
+}
+async function saveProgram(){
+  if(!PROGRAM) return;
+  if(!(window.isAuthed&&window.isAuthed())){
+    if(window.openAuth){ openAuth({signup:true, prefill:{name:(LEAD&&LEAD.name)||'', email:(LEAD&&LEAD.email)||''}, onAuth:saveProgram}); }
+    else { const j=document.querySelector('[data-join]'); if(j)j.click(); }
+    return;
+  }
+  const btn=$('#saveBtn'); if(btn){ btn.disabled=true; btn.textContent='Kaydediliyor…'; }
+  try{
+    const body=Object.assign({}, lastBase, {plan:LAST.plan, tips:LAST.tips, products:LAST.products, weeks:PROGRAM.weeks, days:PROGRAM.days});
+    const r=await fetch('/api/programs',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify(body)});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok){ toast(d.error||'Kaydedilemedi'); if(btn){btn.disabled=false; btn.textContent='💾 Kaydet & takvime geçir';} return; }
+    location.href='takvim.html';
+  }catch(e){ toast('Bağlantı hatası'); if(btn){btn.disabled=false; btn.textContent='💾 Kaydet & takvime geçir';} }
+}
+
+/* ---------- yeniden üret (feedback ile, max 3) ---------- */
+const fbModal=$('#fbModal');
+function openFeedback(){
+  if(regenLeft<=0){ toast('Yeniden üretim hakkın doldu — beğendiysen programı kur'); return; }
+  $('#fbNote').value=''; $$('#fbChips .opt-chip').forEach(c=>c.setAttribute('aria-pressed','false'));
+  fbModal.classList.add('show'); document.body.style.overflow='hidden';
+}
+function closeFeedback(){ fbModal.classList.remove('show'); document.body.style.overflow=''; }
+async function doRegen(){
+  const chips=$$('#fbChips .opt-chip[aria-pressed=true]').map(c=>c.textContent.trim());
+  const note=$('#fbNote').value.trim();
+  const feedback=[chips.join(', '),note].filter(Boolean).join('. ');
+  if(!feedback){ toast('Neyi değiştirelim — seç ya da yaz'); return; }
+  closeFeedback(); regenLeft--;
+  const cart=(window.getCart&&window.getCart())||[];
+  const useCart=$('#useCart')&&$('#useCart').checked&&cart.length;
+  result.innerHTML='<div class="kstep"><div class="thinking">Önerini güncelliyorum <span class="dots"><i></i><i></i><i></i></span></div></div>';
+  result.scrollIntoView({behavior:'smooth',block:'start'});
+  try{
+    const r=await fetch('/api/coach',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify(Object.assign({mode:'quick',feedback},lastBase,LEAD?{name:LEAD.name,email:LEAD.email,phone:LEAD.phone,kvkk:true}:{},{cart:useCart?cart.map(i=>({name:i.name,qty:i.qty})):[]}))});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok){ toast(d.error||'Olmadı, tekrar dene'); result.innerHTML='<div class="kstep coach-soon"><p>'+esc(d.error||'Tekrar dene.')+'</p></div>'; return; }
+    LAST=d; renderResult(d);
+  }catch(e){ toast('Bağlantı hatası'); }
+}
+
+/* ---------- PDF (sunucu üretir, gerçek dosya iner) ---------- */
+async function downloadPdf(){
+  if(!PROGRAM){ toast('Program henüz hazır değil'); return; }
+  const btn=$('#pdfBtn'); let _o=''; if(btn){ _o=btn.innerHTML; btn.disabled=true; btn.innerHTML='Hazırlanıyor…'; }
+  try{
+    const body={ name:(LEAD&&LEAD.name)||((LAST&&LAST.person&&LAST.person.name)||''), goal:(lastBase&&lastBase.goal)||goal||'', plan:LAST&&LAST.plan, products:LAST&&LAST.products, weeks:PROGRAM.weeks, days:PROGRAM.days };
+    const r=await fetch('/api/program-pdf',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify(body)});
+    if(!r.ok) throw new Error('pdf');
+    const blob=await r.blob(); const url=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download='Goodsoria-30-gunluk-program.pdf'; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),4000);
+    toast('PDF indirildi ✓');
+  }catch(e){ toast('PDF oluşturulamadı, tekrar dene'); }
+  finally{ if(btn){ btn.disabled=false; btn.innerHTML=_o; } }
+}
+
+/* feedback modal kablolama */
+$$('#fbChips .opt-chip').forEach(c=>c.addEventListener('click',()=>c.setAttribute('aria-pressed',c.getAttribute('aria-pressed')==='true'?'false':'true')));
+$('#fbClose').addEventListener('click',closeFeedback);
+fbModal.addEventListener('click',e=>{ if(e.target===fbModal)closeFeedback(); });
+$('#fbGo').addEventListener('click',doRegen);
+
+goBtn.addEventListener('click',run);
+$('#msg').addEventListener('keydown',e=>{ if(e.key==='Enter'&&(e.ctrlKey||e.metaKey))run(); });
+</script>
+</body>
+</html>

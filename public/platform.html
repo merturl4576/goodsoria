@@ -95,6 +95,7 @@
     </header>
 
     <main>
+      <div id="todaySlot"></div>
       <!-- HERO -->
       <section class="hero">
         <div class="hero-main" data-reveal>
@@ -178,14 +179,7 @@
           <button class="chip" data-cat="sporcu" aria-pressed="false">Sporcu</button>
           <button class="chip" data-cat="gunluk" aria-pressed="false">Günlük Beslenme</button>
         </div>
-        <div class="pgrid" id="grid">
-          <article class="pcard" data-cat="kilo" data-goals="kilo enerji" data-name="formül 1 besleyici shake"><span class="match-rib">✦ Sana uygun</span><div class="picwrap"><img class="pic" src="https://images.unsplash.com/photo-1654084767590-a38c7f0f5bd3?auto=format&fit=crop&w=600&q=80" alt="Yeşil besleyici shake"><button class="fav" aria-label="Favori"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21C5 14 3 11 3 7.5A4.5 4.5 0 0 1 12 6a4.5 4.5 0 0 1 9 1.5C21 11 19 14 12 21z"/></svg></button></div><div class="body"><span class="cat">Kilo Kontrolü</span><h3>Formül 1 Besleyici Shake</h3><p>Dengeli bir öğün yerine geçen, protein ve bitki besinli içecek tozu.</p><div class="stars">★★★★★ <b>4.9</b> <span>(214)</span></div><div class="row"><span class="lockprice"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Fiyat üyelikte</span><button class="btn btn-primary btn-sm add">Sepete ekle</button></div></div></article>
-          <article class="pcard" data-cat="sporcu" data-goals="kas" data-name="saf protein tozu"><span class="match-rib">✦ Sana uygun</span><div class="picwrap"><img class="pic" src="https://images.unsplash.com/photo-1622484212022-983850e48832?auto=format&fit=crop&w=600&q=80" alt="Protein içeceği"><button class="fav" aria-label="Favori"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21C5 14 3 11 3 7.5A4.5 4.5 0 0 1 12 6a4.5 4.5 0 0 1 9 1.5C21 11 19 14 12 21z"/></svg></button></div><div class="body"><span class="cat">Sporcu</span><h3>Saf Protein Tozu</h3><p>Antrenman sonrası toparlanma ve kas desteği için yüksek protein.</p><div class="stars">★★★★★ <b>4.8</b> <span>(167)</span></div><div class="row"><span class="lockprice"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Fiyat üyelikte</span><button class="btn btn-primary btn-sm add">Sepete ekle</button></div></div></article>
-          <article class="pcard" data-cat="gunluk" data-goals="enerji kilo" data-name="bitki bazlı çay içeceği"><span class="match-rib">✦ Sana uygun</span><div class="picwrap"><img class="pic" src="https://images.unsplash.com/photo-1514994960127-ed3ef9239d11?auto=format&fit=crop&w=600&q=80" alt="Meyveli içecek"><button class="fav" aria-label="Favori"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21C5 14 3 11 3 7.5A4.5 4.5 0 0 1 12 6a4.5 4.5 0 0 1 9 1.5C21 11 19 14 12 21z"/></svg></button></div><div class="body"><span class="cat">Günlük Beslenme</span><h3>Bitki Bazlı Çay İçeceği</h3><p>Gün boyu canlılık için ferahlatıcı, hafif bitki çayı karışımı.</p><div class="stars">★★★★★ <b>4.9</b> <span>(341)</span></div><div class="row"><span class="lockprice"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Fiyat üyelikte</span><button class="btn btn-primary btn-sm add">Sepete ekle</button></div></div></article>
-          <article class="pcard" data-cat="gunluk" data-goals="sindirim" data-name="aloe konsantre içecek"><span class="match-rib">✦ Sana uygun</span><div class="picwrap"><img class="pic" src="https://images.unsplash.com/photo-1615182786737-16b4caf5580a?auto=format&fit=crop&w=600&q=80" alt="Yeşil şişe"><button class="fav" aria-label="Favori"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21C5 14 3 11 3 7.5A4.5 4.5 0 0 1 12 6a4.5 4.5 0 0 1 9 1.5C21 11 19 14 12 21z"/></svg></button></div><div class="body"><span class="cat">Günlük Beslenme</span><h3>Aloe Konsantre İçecek</h3><p>Su tüketimini keyifli hale getiren, hafif aloe veralı konsantre.</p><div class="stars">★★★★☆ <b>4.7</b> <span>(98)</span></div><div class="row"><span class="lockprice"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Fiyat üyelikte</span><button class="btn btn-primary btn-sm add">Sepete ekle</button></div></div></article>
-          <article class="pcard" data-cat="sporcu" data-goals="kas enerji" data-name="protein bar"><span class="match-rib">✦ Sana uygun</span><div class="picwrap"><img class="pic" src="https://images.unsplash.com/photo-1511909525232-61113c912358?auto=format&fit=crop&w=600&q=80" alt="Meyve kâsesi"><button class="fav" aria-label="Favori"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21C5 14 3 11 3 7.5A4.5 4.5 0 0 1 12 6a4.5 4.5 0 0 1 9 1.5C21 11 19 14 12 21z"/></svg></button></div><div class="body"><span class="cat">Sporcu</span><h3>Protein Bar</h3><p>Yanında taşı, tok kal: pratik ve lezzetli protein atıştırması.</p><div class="stars">★★★★★ <b>4.8</b> <span>(122)</span></div><div class="row"><span class="lockprice"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Fiyat üyelikte</span><button class="btn btn-primary btn-sm add">Sepete ekle</button></div></div></article>
-          <article class="pcard" data-cat="gunluk" data-goals="enerji sindirim" data-name="günlük multivitamin"><span class="match-rib">✦ Sana uygun</span><div class="picwrap"><img class="pic" src="https://images.unsplash.com/photo-1543364195-bfe6e4932397?auto=format&fit=crop&w=600&q=80" alt="Taze sebzeler"><button class="fav" aria-label="Favori"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21C5 14 3 11 3 7.5A4.5 4.5 0 0 1 12 6a4.5 4.5 0 0 1 9 1.5C21 11 19 14 12 21z"/></svg></button></div><div class="body"><span class="cat">Günlük Beslenme</span><h3>Günlük Multivitamin</h3><p>Yoğun günlerde temel vitamin ve mineral desteği.</p><div class="stars">★★★★★ <b>4.9</b> <span>(203)</span></div><div class="row"><span class="lockprice"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Fiyat üyelikte</span><button class="btn btn-primary btn-sm add">Sepete ekle</button></div></div></article>
-        </div>
+        <div class="pgrid" id="grid"></div>
         <p class="empty" id="empty" hidden>Bu kritere uygun ürün bulunamadı. Filtreleri temizleyip tekrar dene.</p>
       </section>
 
@@ -277,7 +271,32 @@
 <div class="toast" id="toast"></div>
 
 <script src="assets/diri.js"></script>
+<script src="assets/catalog.js"></script>
 <script>
+/* öne çıkan ürünler: assets/catalog.js → window.CATALOG (mağaza ile aynı tek kaynak) */
+const CAT=window.CATALOG;
+const HCAT=p=>p.goals.includes('kilo')?'kilo':(p.goals.includes('kas')?'sporcu':'gunluk');
+const HNAME={kilo:'Kilo Kontrolü',sporcu:'Sporcu',gunluk:'Günlük Beslenme'};
+function buildFeatured(){
+  const by={kilo:[],sporcu:[],gunluk:[]};
+  CAT.products.filter(p=>p.stock&&p.price).forEach(p=>by[HCAT(p)].push(p));
+  Object.keys(by).forEach(k=>by[k].sort((a,b)=>b.pop-a.pop));
+  const list=[...by.kilo.slice(0,3),...by.sporcu.slice(0,3),...by.gunluk.slice(0,3)];
+  $('#grid').innerHTML=list.map(p=>CAT.card(p,{rib:true,catLabel:HNAME[HCAT(p)],
+    attrs:'data-slug="'+p.slug+'" data-cat="'+HCAT(p)+'" data-goals="'+p.goals.join(' ')+'" data-name="'+p.name.toLowerCase().replace(/"/g,'')+'"'})).join('');
+  $$('#grid .add').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();window.cartAddFromBtn(b);}));
+  $$('#grid .fav').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();e.preventDefault();window.toggleFav&&window.toggleFav(b);}));
+  if(window.refreshFavButtons)window.refreshFavButtons();
+}
+/* gerçek puanlar gelince kartların yıldızlarını yerinde tazele (kart düğümleri korunur) */
+function updateStars(){
+  $$('#grid .pcard').forEach(c=>{
+    const slug=c.getAttribute('data-slug'), el=c.querySelector('.stars');
+    if(slug&&el)el.outerHTML=CAT.starsRow(slug);
+  });
+}
+buildFeatured();
+
 /* home: featured store filter + finder */
 const cards=$$('.pcard'), rlabel=$('#rlabel'), empty=$('#empty');
 let state={cat:'all',goal:null,q:''};
@@ -343,25 +362,42 @@ render();
     res.scrollIntoView({behavior:'smooth',block:'nearest'});
   });
   const lb=$('#leadBtn');
-  if(lb)lb.addEventListener('click',()=>{
+  if(lb)lb.addEventListener('click',async()=>{
     const ad=$('#lead-ad').value.trim(), mail=$('#lead-mail').value.trim(), tel=$('#lead-tel').value.trim();
     if(!ad||(!mail&&!tel)){toast('Ad ve en az bir iletişim (e-posta veya telefon) gerekli');return;}
     if(!$('#lead-kvkk').checked){toast('Devam için KVKK onayı gerekli');return;}
-    try{const ls=JSON.parse(localStorage.getItem('goodsoria_leads')||'[]');ls.push({ad,mail,tel,bmi:$('#vki-num').textContent,cat:$('#vki-cat').textContent});localStorage.setItem('goodsoria_leads',JSON.stringify(ls));}catch(e){}
-    $('#vkiLead').innerHTML='<p style="margin:0"><b>Teşekkürler '+(ad.split(' ')[0]||'')+'! ✓</b><br>Sana özel önerini en kısa sürede ileteceğiz.</p>';
-    toast('Bilgilerin alındı ✓ (demo)');
+    lb.disabled=true; const _lt=lb.textContent; lb.textContent='Gönderiliyor…';
+    let wa=null;
+    try{
+      // lead artık DB'ye + distribütöre gider (localStorage değil)
+      const r=await fetch('/api/leads',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({name:ad,email:mail,phone:tel,source:'vki',bmi:$('#vki-num').textContent,category:$('#vki-cat').textContent})});
+      const d=await r.json(); if(!r.ok)throw new Error(d.error||'Gönderilemedi'); wa=d.wa;
+    }catch(err){ toast(err.message||'Bağlantı hatası'); lb.disabled=false; lb.textContent=_lt; return; }
+    $('#vkiLead').innerHTML='<p style="margin:0"><b>Teşekkürler '+(ad.split(' ')[0]||'')+'! ✓</b><br>Bilgilerin distribütörüne iletildi; sana özel öneri için en kısa sürede dönüş yapılacak.</p>'+(wa?'<a class="btn btn-lime btn-sm" href="'+wa+'" target="_blank" rel="noopener" style="margin-top:.7rem">📲 WhatsApp\'tan ulaş</a>':'');
+    toast('Bilgilerin alındı ✓');
   });
 })();
 
-/* featured kartlarda açık fiyat (PRICE_PUBLIC ile aynı kaynak) */
-(function(){
-  if(!window.PRICE_PUBLIC)return;
-  const P={'formül 1 besleyici shake':1290,'saf protein tozu':1150,'bitki bazlı çay içeceği':1490,'aloe konsantre içecek':980,'protein bar':540,'günlük multivitamin':690};
-  $$('#grid .pcard').forEach(c=>{
-    const lp=c.querySelector('.lockprice'); if(!lp)return;
-    const pr=P[c.dataset.name];
-    if(pr)lp.outerHTML='<span class="price" style="font-weight:800;font-size:1.06rem;color:var(--ink)">'+pr.toLocaleString('tr-TR')+' ₺</span>';
-  });
+/* gerçek puan özetini çek, gelince kartların yıldızlarını tazele */
+window.CATALOG.loadSummary().then(updateStars);
+
+/* aktif program varsa "bugünün görevi" mini kartı (giriş yapan dönüş kullanıcısı) */
+(async function todayCard(){
+  try{
+    const r=await fetch('/api/programs/active',{credentials:'same-origin'});
+    if(!r.ok)return;
+    const d=await r.json().catch(()=>null); if(!d||!d.program)return;
+    const day=Math.min(30,d.progress.elapsed);
+    const t=(d.program.days||[]).find(x=>x.day===day); if(!t)return;
+    const host=document.getElementById('todaySlot'); if(!host)return;
+    const enc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    host.innerHTML='<a href="takvim.html" style="display:block;text-decoration:none;background:linear-gradient(135deg,#16623a,#0d3f25);color:#fff;border-radius:16px;padding:1rem 1.2rem;margin:0 0 1.2rem">'
+      +'<div style="display:flex;justify-content:space-between;gap:.6rem;flex-wrap:wrap;font-size:.78rem;opacity:.92;font-weight:700"><span>📅 Bugünün görevi · '+day+'. gün</span><span>%'+d.progress.dedication+' sadakat · 🔥'+d.progress.streak+'</span></div>'
+      +'<div style="font-family:\'Bricolage Grotesque\',system-ui;font-weight:700;font-size:1.05rem;margin:.4rem 0 .25rem">🌿 '+enc(t.product)+'</div>'
+      +'<div style="font-size:.82rem;opacity:.92">🥗 '+enc(t.nutrition)+'</div>'
+      +'<div style="margin-top:.55rem;font-size:.82rem;font-weight:800;color:#c8f560">Takvime git →</div></a>';
+  }catch(e){}
 })();
 </script>
 </body>

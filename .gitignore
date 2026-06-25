@@ -13,3 +13,8 @@ _yedek/
 # çalışma/tasarım dosyaları (siteye dahil değil)
 *.png
 goodsroriakalinayer.txt
+# yerel sunucu logları (geliştirme)
+.srv.out.log
+.srv.err.log
+
+.vercel

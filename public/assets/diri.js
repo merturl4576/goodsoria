@@ -35,12 +35,21 @@ const NAV_DISCOVER=[
   {href:'platform.html',page:'home',label:'Ana Sayfa',icon:'<path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/>'},
   {href:'magaza.html',page:'magaza',label:'Mağaza',icon:'<path d="M3 9h18l-1.4 11a2 2 0 0 1-2 1.7H6.4a2 2 0 0 1-2-1.7L3 9z"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/>'},
   {href:'bulucu.html',page:'bulucu',label:'Ürün Bulucu',icon:'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/>'},
+  {href:'koc.html',page:'koc',label:'AI Koç',pill:'Yeni',icon:'<path d="M9 3 10.4 7.1 14.5 8.5 10.4 9.9 9 14 7.6 9.9 3.5 8.5 7.6 7.1z"/><path d="M17.5 13l.8 2.3 2.2.8-2.2.8-.8 2.3-.8-2.3-2.2-.8 2.2-.8z"/>'},
   {href:'distributor.html',page:'distributor',label:'Distribütör Ol',pill:'Kazanç',icon:'<path d="M3 17l5-5 4 4 8-8"/><path d="M16 8h4v4"/>'},
   {href:'topluluk.html',page:'topluluk',label:'Topluluk',icon:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/>'}
 ];
 const NAV_ACCOUNT=[
-  {href:'panel.html',page:'panel',label:'Panelim',auth:true,icon:'<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>'}
+  {href:'panel.html',page:'panel',label:'Panelim',auth:true,icon:'<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>'},
+  {href:'takvim.html',page:'takvim',label:'Takvimim',auth:true,icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>'}
 ];
+/* yalnız admin hesabında görünür — yönetim paneli kısayolu */
+const NAV_ADMIN={href:'admin.html',page:'admin',label:'Yönetim',pill:'Admin',auth:true,icon:'<path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/>'};
+function accountNav(){
+  const list=NAV_ACCOUNT.slice();
+  if(_user&&_user.role==='admin')list.push(NAV_ADMIN);
+  return list;
+}
 const LOCKICO='<svg class="lockico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" style="margin-left:auto;opacity:.6"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
 const cur=()=>document.body.dataset.page||'';
 
@@ -63,13 +72,13 @@ function renderSidebar(){
   const el=$('#sidebar')||$('.sidebar'); if(!el)return;
   el.innerHTML=`<a class="sb-brand" href="platform.html"><span class="mark">${MARK}</span><span><span class="nm">Goodsoria</span><br><span class="tag">Herbalife Platformu</span></span></a>`
     +`<div class="sb-sect">Keşfet</div>`+NAV_DISCOVER.map(navLink).join('')
-    +`<div class="sb-sect">Hesabım</div>`+NAV_ACCOUNT.map(navLink).join('')
+    +`<div class="sb-sect">Hesabım</div>`+accountNav().map(navLink).join('')
     +footCard();
 }
 function renderDrawer(){
   const el=$('#drawerPanel')||$('#drawer .panel'); if(!el)return;
   el.innerHTML=`<a class="sb-brand" href="platform.html"><span class="mark">${MARK}</span><span><span class="nm">Goodsoria</span><br><span class="tag">Herbalife Platformu</span></span></a>`
-    +NAV_DISCOVER.concat(NAV_ACCOUNT).map(navLink).join('')+footCard();
+    +NAV_DISCOVER.concat(accountNav()).map(navLink).join('')+footCard();
 }
 const BOTNAV=[
   {href:'platform.html',page:'home',label:'Ana',icon:'<path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/>'},
@@ -117,17 +126,20 @@ function setAuthMode(signup){
   $('#auth-switch').textContent=_signupMode?'Giriş yap':'Ücretsiz üye ol';
   const e=$('#auth-err'); if(e)e.style.display='none';
 }
+let _authCb=null;
 function openAuth(opts){
   opts=opts||{};_pendingRedirect=opts.redirect||null;_gateMode=!!opts.gate;
+  _authCb=(typeof opts.onAuth==='function')?opts.onAuth:null;
   buildAuthModal();
   $('#auth-p').textContent=_gateMode?'Panelim ve Siparişlerim yalnızca giriş yaptıktan sonra görüntülenir.':'Panelim ve sipariş takibin üyelikte açılır.';
   $('#auth-cancel').textContent=_gateMode?'Ana sayfaya dön':'Vazgeç';
   setAuthMode(!!opts.signup);
+  if(opts.prefill){ const n=$('#auth-name'); if(n&&opts.prefill.name)n.value=opts.prefill.name; const e=$('#auth-email'); if(e&&opts.prefill.email)e.value=opts.prefill.email; }
   $('#authmodal').hidden=false;document.body.style.overflow='hidden';
   setTimeout(()=>{const f=$(_signupMode?'#auth-name':'#auth-email');if(f)f.focus();},60);
 }
 function closeAuth(){
-  const d=$('#authmodal');if(d)d.hidden=true;document.body.style.overflow='';
+  const d=$('#authmodal');if(d)d.hidden=true;document.body.style.overflow='';_authCb=null;
   if(_gateMode&&!isAuthed()){location.href='platform.html';}
 }
 async function doAuth(){
@@ -143,6 +155,7 @@ async function doAuth(){
     document.body.classList.remove('locked');
     renderSidebar();renderDrawer();renderBotnav();bindShell();
     toast(_signupMode?'Hesabın oluşturuldu ✓':'Giriş yapıldı ✓');
+    if(_authCb){const cb=_authCb;_authCb=null;cb();}
   }catch(ex){
     if(err){err.textContent=ex.message||'İşlem başarısız oldu.';err.style.display='block';}
   }finally{ go.disabled=false; go.textContent=_t; }
@@ -153,7 +166,48 @@ function bindShell(){
   $$('[data-join]').forEach(el=>{el.onclick=e=>{e.preventDefault();openAuth({signup:/üye\s*ol/i.test(el.textContent||'')});};});
   $$('[data-account]').forEach(el=>{el.onclick=e=>{if(!isAuthed()){e.preventDefault();openAuth({redirect:el.getAttribute('href')});}};});
   const lo=$('#logoutBtn'); if(lo)lo.onclick=async()=>{await apiLogout();if(document.body.hasAttribute('data-requires-auth')){location.href='platform.html';}else{renderSidebar();renderDrawer();renderBotnav();bindShell();toast('Çıkış yapıldı');}};
-  if(isAuthed())$$('.topbar [data-join]').forEach(b=>{b.textContent='Hesabım';b.onclick=()=>location.href='panel.html';});
+  syncAccountAvatar();
+  syncFavButton();
+}
+
+/* topbar: giriş yapılmışsa "Giriş/Üye ol" butonunu profil çemberine çevir (tüm sayfalar) */
+function avInitial(){const u=currentUser();const n=((u&&(u.name||u.email))||'').trim();return (n?n[0]:'?').toUpperCase();}
+function syncAccountAvatar(){
+  $$('.topbar [data-join]').forEach(b=>{
+    if(isAuthed()){
+      b.classList.remove('btn','btn-primary','btn-sm','btn-ghost');b.classList.add('topbar-av');
+      b.textContent=avInitial();
+      b.title='Hesabım'+(currentUser()&&currentUser().name?' — '+currentUser().name:'');
+      b.setAttribute('aria-label','Hesabım');
+      b.onclick=()=>location.href='panel.html';
+    }else if(b.classList.contains('topbar-av')){ /* çıkış sonrası geri al */
+      b.classList.remove('topbar-av');b.classList.add('btn','btn-primary','btn-sm');
+      b.textContent='Giriş / Üye ol';b.removeAttribute('title');b.removeAttribute('aria-label');
+      b.onclick=e=>{e.preventDefault();openAuth({signup:/üye\s*ol/i.test(b.textContent||'')});};
+    }
+  });
+}
+
+/* topbar: bildirim zilinin sağına favori (kalp) butonu — giriş gerekli */
+const FAV_ICON='<span class="favcount" id="favc" hidden>0</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1a5.5 5.5 0 1 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/></svg>';
+function syncFavButton(){
+  $$('.tb-actions').forEach(bar=>{
+    let btn=bar.querySelector('#favBtn');
+    if(isAuthed()){
+      if(!btn){
+        btn=document.createElement('button');
+        btn.id='favBtn';btn.className='icbtn';btn.type='button';btn.setAttribute('aria-label','Favorilerim');
+        btn.innerHTML=FAV_ICON;
+        btn.addEventListener('click',openFavs);
+        const bell=bar.querySelector('[aria-label="Bildirimler"]');
+        const cart=bar.querySelector('#cartBtn');
+        if(bell)bell.insertAdjacentElement('afterend',btn);
+        else if(cart)bar.insertBefore(btn,cart);
+        else bar.insertBefore(btn,bar.firstChild);
+      }
+    }else if(btn){btn.remove();}
+  });
+  updateFavCount();
 }
 
 /* ---------- page guard ---------- */
@@ -198,15 +252,89 @@ let _favs=new Set();
 function favKey(btn){const c=btn.closest('.pcard'),h=c&&c.querySelector('h3');return h?h.textContent.trim().toLowerCase():'';}
 function paintFav(b,on){b.classList.toggle('on',on);b.style.color=on?'var(--brand)':'';}
 function refreshFavButtons(){$$('.fav').forEach(b=>{const k=favKey(b);if(k)paintFav(b,_favs.has(k));});}
-async function loadFavs(){if(!isAuthed())return;try{const r=await fetch('/api/favorites',{credentials:'same-origin'});const d=await r.json();_favs=new Set(d.favorites||[]);refreshFavButtons();}catch(e){}}
+async function loadFavs(){if(!isAuthed())return;try{const r=await fetch('/api/favorites',{credentials:'same-origin'});const d=await r.json();_favs=new Set(d.favorites||[]);refreshFavButtons();updateFavCount();}catch(e){}}
 async function toggleFav(btn){
   if(!isAuthed()){openAuth({});return;}
   const k=favKey(btn);if(!k)return;
   paintFav(btn,!_favs.has(k));
-  try{const r=await fetch('/api/favorites/toggle',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({product:k})});const d=await r.json();if(d.favorited)_favs.add(k);else _favs.delete(k);paintFav(btn,!!d.favorited);if(!d.favorited)toast('Favoriden çıkarıldı');else toast('Favorilere eklendi ♥');}catch(e){paintFav(btn,_favs.has(k));}
+  try{const r=await fetch('/api/favorites/toggle',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({product:k})});const d=await r.json();if(d.favorited)_favs.add(k);else _favs.delete(k);paintFav(btn,!!d.favorited);updateFavCount();if(!d.favorited)toast('Favoriden çıkarıldı');else toast('Favorilere eklendi ♥');}catch(e){paintFav(btn,_favs.has(k));}
 }
 window.toggleFav=toggleFav; window.refreshFavButtons=refreshFavButtons; window.loadFavs=loadFavs; window.favCount=()=>_favs.size; window.getFavs=()=>[..._favs];
 $$('.fav').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();e.preventDefault();toggleFav(b);}));
+
+/* ---------- FAVORİ PANELİ (topbar kalp → kayan çekmece) ---------- */
+function favEsc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function favTL(n){return (Number(n)||0).toLocaleString('tr-TR')+' TL';}
+function updateFavCount(){const e=$('#favc');if(!e)return;const n=_favs.size;e.textContent=n;if(n>0)e.removeAttribute('hidden');else e.setAttribute('hidden','');}
+function favEmptyHtml(){return '<div class="favempty"><div class="favempty-ic">♡</div><p>Henüz favori ürünün yok.</p><a class="btn btn-primary btn-sm" href="magaza.html">Ürünleri keşfet</a></div>';}
+function favRow(p){
+  const price=p.stock
+    ?'<span class="favrow-pr">'+favTL(p.price)+(p.old?' <s>'+favTL(p.old)+'</s>':'')+'</span>'
+    :'<span class="favrow-pr out">Stokta yok</span>';
+  return '<div class="favrow" data-key="'+favEsc(p.key)+'" data-price="'+(p.stock?(Number(p.price)||0):0)+'">'
+    +'<img class="favrow-img" src="'+favEsc(p.img)+'" alt="" loading="lazy">'
+    +'<div class="favrow-info"><span class="favrow-cat">'+favEsc(p.catName||'')+'</span>'
+    +'<b class="favrow-name">'+favEsc(p.name)+'</b>'+price+'</div>'
+    +'<div class="favrow-act">'
+    +(p.stock?'<button class="favrow-add" type="button" data-add>＋ Sepet</button>':'')
+    +'<button class="favrow-rm" type="button" data-rm aria-label="Favoriden çıkar">✕</button></div>'
+    +'</div>';
+}
+function ensureFavDrawer(){
+  let d=$('#favDrawer');if(d)return d;
+  d=document.createElement('div');d.id='favDrawer';d.className='favdrawer';d.hidden=true;
+  d.innerHTML='<div class="favdrawer-back" data-favclose></div>'
+    +'<aside class="favpanel" role="dialog" aria-modal="true" aria-label="Favorilerim">'
+    +'<header class="favpanel-head"><b>Favorilerim</b><button class="favpanel-x" type="button" data-favclose aria-label="Kapat">✕</button></header>'
+    +'<div class="favpanel-body" id="favBody"></div>'
+    +'<footer class="favpanel-foot"><a class="btn btn-ghost btn-sm" href="magaza.html">Mağazaya git</a></footer>'
+    +'</aside>';
+  document.body.appendChild(d);
+  [...d.querySelectorAll('[data-favclose]')].forEach(x=>x.onclick=closeFavs);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){const dd=$('#favDrawer');if(dd&&!dd.hidden)closeFavs();}});
+  return d;
+}
+function setFavBody(html){const b=$('#favBody');if(b)b.innerHTML=html;}
+function wireFavBody(){
+  const body=$('#favBody');if(!body)return;
+  [...body.querySelectorAll('.favrow')].forEach(row=>{
+    const key=row.getAttribute('data-key');
+    const add=row.querySelector('[data-add]');
+    if(add)add.onclick=()=>addToCart({id:key,name:row.querySelector('.favrow-name').textContent,price:Number(row.getAttribute('data-price'))||0});
+    const info=row.querySelector('.favrow-info');
+    if(info)info.onclick=()=>{location.href='magaza.html';};
+    const rm=row.querySelector('[data-rm]');
+    if(rm)rm.onclick=async()=>{
+      try{
+        const r=await fetch('/api/favorites/toggle',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({product:key})});
+        const d=await r.json();
+        if(d.favorited)_favs.add(key);else _favs.delete(key);
+        updateFavCount();refreshFavButtons();
+        row.style.opacity='0';
+        setTimeout(()=>{row.remove();if(!$('#favBody').querySelector('.favrow'))setFavBody(favEmptyHtml());},170);
+        toast('Favoriden çıkarıldı');
+      }catch(e){}
+    };
+  });
+}
+async function openFavs(){
+  if(!isAuthed()){openAuth({});return;}
+  const d=ensureFavDrawer();
+  d.hidden=false;document.body.classList.add('favopen');
+  requestAnimationFrame(()=>d.classList.add('show'));
+  setFavBody('<div class="favempty"><p>Yükleniyor…</p></div>');
+  try{
+    const r=await fetch('/api/favorites',{credentials:'same-origin'});
+    const data=await r.json();
+    _favs=new Set(data.favorites||[]);updateFavCount();refreshFavButtons();
+    const prods=data.products||[];
+    if(!prods.length){setFavBody(favEmptyHtml());return;}
+    setFavBody(prods.map(favRow).join(''));
+    wireFavBody();
+  }catch(e){setFavBody('<div class="favempty"><p>Favoriler yüklenemedi.</p></div>');}
+}
+function closeFavs(){const d=$('#favDrawer');if(!d)return;d.classList.remove('show');document.body.classList.remove('favopen');setTimeout(()=>{d.hidden=true;},220);}
+window.openFavs=openFavs;
 
 /* search shortcut */
 addEventListener('keydown',e=>{if(e.key==='/'&&document.activeElement.tagName!=='INPUT'&&document.activeElement.tagName!=='TEXTAREA'){const q=$('#q'); if(q){e.preventDefault();q.focus();}}});

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>30 Günlük Takvimim — Goodsoria · Herbalife Bağımsız Distribütör Platformu</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<meta name="description" content="Sana özel 30 günlük programını günü gününe takip et: her günü işaretle, sadakat puanı kazan, ürünlerini tazele.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/diri.css">
+<style>
+.tk-panel{display:flex;align-items:center;gap:1.3rem;flex-wrap:wrap;background:radial-gradient(120% 140% at 90% 0%,oklch(0.7 0.18 150/.4),transparent 55%),linear-gradient(135deg,var(--brand-deep,#16623a),var(--brand-deeper,#0d3f25));color:#fff;border-radius:20px;padding:1.3rem 1.4rem;margin-bottom:1.2rem}
+.tk-ring{--p:0;width:96px;height:96px;border-radius:50%;flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:conic-gradient(var(--lime) calc(var(--p)*1%),oklch(1 0 0/.18) 0);position:relative}
+.tk-ring::before{content:"";position:absolute;inset:8px;border-radius:50%;background:var(--brand-deeper,#0d3f25)}
+.tk-ring b{position:relative;font-family:"Bricolage Grotesque";font-size:1.4rem;line-height:1}
+.tk-ring small{position:relative;font-size:.66rem;opacity:.85;margin-top:2px}
+.tk-stats{display:flex;gap:1.4rem;flex-wrap:wrap}
+.tk-stats>div{display:flex;flex-direction:column}
+.tk-stats b{font-family:"Bricolage Grotesque";font-size:1.35rem;line-height:1}
+.tk-stats small{font-size:.74rem;opacity:.85;margin-top:3px}
+.tk-badges{display:flex;gap:.4rem;flex-wrap:wrap;margin-left:auto;align-items:center;max-width:100%}
+.tk-badge{background:oklch(1 0 0/.16);border:1px solid oklch(1 0 0/.25);border-radius:999px;padding:.28rem .65rem;font-size:.74rem;font-weight:700}
+.tk-badges .sub{color:oklch(0.9 0.03 150)}
+.tk-todaycard{background:var(--surface,#fff);border:1px solid var(--line);border-left:4px solid var(--brand);border-radius:16px;padding:1rem 1.1rem;margin-bottom:1.2rem}
+.tk-th{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.55rem}
+.tk-th b{font-family:"Bricolage Grotesque";font-size:1.05rem}
+.tk-ok{color:var(--brand);font-weight:700;font-size:.85rem}
+.dcard-ul{list-style:none;margin:0 0 .8rem;padding:0;display:grid;gap:.4rem}
+.dcard-ul li{font-size:.9rem;line-height:1.4}
+.tk-sech{font-family:"Bricolage Grotesque";font-weight:700;font-size:1.1rem;margin:.2rem 0 .3rem}
+/* haftalık ajanda — her gün kendi kartı, görevler içinde */
+.tk-week{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin:1.3rem 0 .65rem}
+.tk-week .wn{font-family:"Bricolage Grotesque";font-weight:800;font-size:.9rem;color:var(--brand);letter-spacing:.02em}
+.tk-week .wt{font-size:.86rem;color:var(--muted)}
+.tk-days{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:.75rem}
+.tk-daybox{border:1px solid var(--line);border-radius:16px;padding:.9rem 1rem;background:var(--surface,#fff);transition:.14s}
+.tk-daybox.today{border-color:var(--brand);box-shadow:0 0 0 2px var(--brand) inset,0 14px 30px -20px var(--brand);background:linear-gradient(165deg,oklch(0.98 0.022 150),var(--surface,#fff))}
+.tk-daybox.done{background:oklch(0.985 0.018 150);border-color:oklch(0.86 0.06 150)}
+.tk-daybox.future{opacity:.6}
+.tk-daybox.missed{opacity:.84}
+.tk-dhead{display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem}
+.tk-dhead b{font-family:"Bricolage Grotesque";font-size:1.02rem}
+.tk-tag{font-size:.7rem;font-weight:700;padding:.16rem .55rem;border-radius:999px;white-space:nowrap}
+.tk-tag.today{background:var(--brand);color:#fff}
+.tk-tag.done{background:oklch(0.9 0.07 150);color:var(--brand-deep,#16623a)}
+.tk-tag.lock{background:oklch(0.95 0.01 250);color:var(--muted)}
+.tk-tag.miss{background:oklch(0.93 0.04 40);color:#9a6b33}
+.tk-cd{font-size:.72rem;font-weight:700;color:var(--brand);font-variant-numeric:tabular-nums;white-space:nowrap;background:oklch(0.96 0.02 150);border-radius:6px;padding:.1rem .4rem}
+.tk-prog{margin-left:auto;font-weight:700;font-size:.82rem;color:var(--brand)}
+.tk-tasks{display:grid;gap:.55rem;margin:.3rem 0 .6rem}
+.tk-task{display:flex;gap:.7rem;align-items:flex-start;text-align:left;font:inherit;width:100%;background:var(--bg,#fff);border:1px solid var(--line);border-radius:12px;padding:.7rem .8rem;cursor:pointer;transition:.14s;color:var(--ink)}
+.tk-task:hover{border-color:var(--brand)}
+.tk-task[disabled]{cursor:not-allowed;opacity:.6}
+.tk-task .tk-box{flex:none;width:1.45rem;height:1.45rem;border-radius:7px;border:2px solid var(--line);display:grid;place-items:center;color:#fff;font-weight:800;font-size:.9rem;margin-top:1px;transition:.14s}
+.tk-task.on{border-color:var(--brand);background:oklch(0.97 0.03 150)}
+.tk-task.on .tk-box{background:var(--brand);border-color:var(--brand)}
+.tk-tl{display:flex;flex-direction:column;gap:.15rem;min-width:0}
+.tk-tl b{font-size:.86rem;font-weight:700}
+.tk-tl span{font-size:.84rem;color:var(--muted);line-height:1.4}
+.tk-task.on .tk-tl b{text-decoration:line-through;text-decoration-color:oklch(0.7 0.1 150)}
+.tk-motiv{font-size:.86rem;color:var(--brand-deep,#16623a);font-weight:600;margin-top:.2rem}
+.tk-lock{margin-top:.6rem;font-size:.82rem;color:var(--muted);background:oklch(0.96 0.01 250);border-radius:10px;padding:.55rem .7rem}
+.tk-todaycard.locked{opacity:.95}
+.tk-upsell{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;background:oklch(0.98 0.03 85);border:1px solid oklch(0.85 0.08 85);border-radius:14px;padding:.85rem 1rem;margin-bottom:1.1rem;font-size:.9rem}
+.tk-upsell .btn{margin-left:auto;background:var(--brand);color:#fff;border:0;font-weight:700}
+.tk-actions{display:flex;gap:.7rem;flex-wrap:wrap;margin-bottom:.6rem}
+.coach-disc{font-size:.76rem;color:var(--muted);margin-top:.8rem;line-height:1.5}
+.coach-soon{text-align:center;padding:2.2rem 1.2rem;color:var(--muted)}
+.thinking{display:flex;align-items:center;gap:.7rem;color:var(--muted);font-weight:600;padding:1.6rem 0;justify-content:center}
+.dots{display:inline-flex;gap:.3rem}.dots i{width:.55rem;height:.55rem;border-radius:50%;background:var(--brand);animation:bln 1s infinite ease-in-out}
+.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+@keyframes bln{0%,80%,100%{opacity:.3;transform:translateY(0)}40%{opacity:1;transform:translateY(-5px)}}
+.lgate{position:fixed;inset:0;z-index:140;display:none;align-items:center;justify-content:center;padding:1.2rem;background:oklch(0.22 0.03 150/.55);backdrop-filter:blur(3px)}
+.lgate.show{display:flex}
+.lgate .gcard{background:var(--surface,#fff);border-radius:20px;max-width:430px;width:100%;padding:1.4rem 1.5rem 1.3rem;box-shadow:0 34px 80px -34px rgba(0,0,0,.55);position:relative}
+.lgate .gx{position:absolute;right:.85rem;top:.6rem;border:0;background:transparent;font-size:1.5rem;line-height:1;cursor:pointer;color:var(--muted)}
+.lgate h3{margin:.1rem 0 .6rem;font-family:"Bricolage Grotesque";font-size:1.25rem}
+@media(max-width:480px){.tk-days{grid-template-columns:1fr}}
+</style>
+</head>
+<body data-page="takvim" data-requires-auth>
+
+<div class="compliance"><div class="in">
+  <b>Herbalife® Bağımsız Distribütör</b><span class="sep">•</span><span>Abdoul Raouf Savadogo</span>
+  <span class="sep">•</span><span>İstanbul</span><span class="sep">•</span><span>0500 000 00 00</span>
+  <span class="badge"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Orijinal Herbalife ürünleri</span>
+</div></div>
+
+<div class="app">
+  <aside class="sidebar"></aside>
+  <div class="content">
+    <header class="topbar">
+      <button class="icbtn menubtn" id="menuBtn" aria-label="Menü"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <label class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input id="q" type="search" placeholder="Ara…" autocomplete="off"><kbd>/</kbd></label>
+      <div class="tb-actions">
+        <button class="icbtn" id="cartBtn" aria-label="Sepet"><span class="cartcount" id="cc">0</span><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg></button>
+        <button class="btn btn-primary btn-sm" data-join>Giriş / Üye ol</button>
+      </div>
+    </header>
+
+    <main>
+      <div class="crumb"><a href="platform.html">Ana Sayfa</a><span class="s">/</span><span>30 Günlük Takvimim</span></div>
+      <section id="tkRoot"><div class="thinking">Takvimin yükleniyor <span class="dots"><i></i><i></i><i></i></span></div></section>
+    </main>
+
+    <footer><div class="fin">
+      <div class="foot-top">
+        <div><div class="foot-brand">Goodsoria</div><p style="margin-top:.7rem;color:oklch(0.8 0.03 140);max-width:38ch">Herbalife ürün mağazası, kişisel ürün bulucu, AI beslenme koçu ve topluluk — tek platformda.</p></div>
+        <div><h4>Platform</h4><a href="magaza.html">Mağaza</a><a href="bulucu.html">Ürün Bulucu</a><a href="koc.html">AI Koç</a><a href="takvim.html">Takvimim</a></div>
+        <div><h4>Hesap</h4><a href="panel.html">Panelim</a><a href="takvim.html">Takvimim</a><a href="sepet.html">Sepetim</a></div>
+        <div><h4>Bilgi</h4><a href="#">Ortalama Kazanç Beyanı</a><a href="#">KVKK & Gizlilik</a><a href="#">İletişim</a></div>
+      </div>
+      <div class="foot-legal">
+        <p>Bu internet sitesi bir <b>Herbalife Bağımsız Distribütörü</b> tarafından işletilmektedir ve Herbalife'ın resmî sitesi değildir.</p>
+        <p style="margin-top:.6rem"><b>Sağlık bildirimi:</b> Program önerileri genel bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sonuçlar kişiden kişiye değişir.</p>
+        <p style="margin-top:.6rem">© 2026 Goodsoria. Herbalife ve ürün adları, Herbalife International, Inc.'in ticari markalarıdır.</p>
+      </div>
+    </div></footer>
+  </div>
+</div>
+
+<nav class="botnav"></nav>
+<div class="drawer" id="drawer"><div class="scrim" data-dclose></div><div class="panel"></div></div>
+<div class="toast" id="toast"></div>
+
+<script src="assets/diri.js"></script>
+<script src="assets/catalog.js"></script>
+<script>
+const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const fmt=n=>(n||0).toLocaleString('tr-TR')+' ₺';
+const WHEN_META={'sabah':{l:'Sabah'},'ara öğün':{l:'Ara öğün'},'öğle':{l:'Öğle'},'akşam':{l:'Akşam'},'gün boyu':{l:'Gün boyu'}};
+const GOAL_LABELS={kilo:'Kilo vermek',kas:'Kas & form',enerji:'Enerji & canlılık',sindirim:'Sindirim & hafiflik',genel:'Genel sağlık'};
+let PROG=null, PROGRESS=null;
+const root=$('#tkRoot');
+
+async function load(){
+  try{
+    const r=await fetch('/api/programs/active',{credentials:'same-origin'});
+    if(r.status===401){ root.innerHTML=''; return; }   // diri.js auth gate devralır
+    const d=await r.json().catch(()=>({}));
+    if(!d.program){ root.innerHTML='<div class="kstep coach-soon"><p style="font-size:1.05rem;font-weight:700;color:var(--ink)">Henüz aktif programın yok</p><p>AI Koç sana özel 30 günlük bir program kursun — sonra burada gün gün takip edersin.</p><a class="btn btn-primary" href="koc.html" style="margin-top:.4rem">✨ AI Koç’a git</a></div>'; return; }
+    PROG=d.program; PROGRESS=d.progress; render(); startCountdown();
+    const tb=document.getElementById('tkTodayBox'); if(tb)setTimeout(()=>tb.scrollIntoView({behavior:'smooth',block:'center'}),120);
+  }catch(e){ root.innerHTML='<div class="kstep coach-soon"><p>Yüklenemedi, sayfayı yenile.</p></div>'; }
+}
+
+const DAY_TASKS=['nutrition','product','movement'];
+const TASK_META={nutrition:{ic:'🥗',l:'Beslenme'},product:{ic:'🌿',l:'Ürün'},movement:{ic:'🚶',l:'Hareket'}};
+
+function doneTasksOf(day){ return (PROGRESS.doneTasks||{})[day]||[]; }
+function isTaskDone(day,task){ return doneTasksOf(day).indexOf(task)>=0; }
+function dayComplete(day){ return (PROGRESS.completeDays||[]).indexOf(day)>=0; }
+function weekOf(day){ return Math.min(4,Math.ceil(day/7)); }
+// program başlangıcı (SQLite UTC "YYYY-MM-DD HH:MM:SS") → ms; gün d, başlangıç+(d-1)gün'de açılır
+function programStartMs(){
+  if(!PROG||!PROG.created_at) return null;
+  const t=Date.parse(String(PROG.created_at).replace(' ','T')+'Z');
+  return isNaN(t)?null:t;
+}
+// gün d, başlangıcın TR takvim günü 00:00'ından (d-1) tam gün sonra açılır (TR = UTC+3, gece yarısı)
+function unlockMs(day){
+  const s=programStartMs(); if(s==null)return null;
+  const TR=3*3600000;
+  const trMidnight=Math.floor((s+TR)/86400000)*86400000 - TR;  // created_at'in TR gününün 00:00'ı (UTC ms)
+  return trMidnight + (day-1)*86400000;
+}
+function dayState(day){
+  if(dayComplete(day)) return 'done';
+  if(day>PROGRESS.elapsed) return 'future';
+  if(day===PROGRESS.elapsed) return 'today';
+  if(doneTasksOf(day).length>0) return 'partial';
+  return 'missed';
+}
+function dayCardHtml(d){
+  const day=d.day, st=dayState(day);
+  const locked=day>PROGRESS.elapsed, isToday=day===PROGRESS.elapsed;
+  const tasks=DAY_TASKS.map(tk=>{
+    const m=TASK_META[tk], on=isTaskDone(day,tk);
+    return '<button class="tk-task'+(on?' on':'')+'" data-day="'+day+'" data-task="'+tk+'"'+(locked?' disabled':'')+'>'
+      +'<span class="tk-box">'+(on?'✓':'')+'</span>'
+      +'<span class="tk-tl"><b>'+m.ic+' '+m.l+'</b><span>'+esc(d[tk])+'</span></span></button>';
+  }).join('');
+  const n=doneTasksOf(day).length;
+  const um = locked ? unlockMs(day) : null;
+  const tag = isToday?'<span class="tk-tag today">Bugün</span>'
+    : st==='done'?'<span class="tk-tag done">Tamam ✓</span>'
+    : locked?('<span class="tk-tag lock">🔒 '+(day-PROGRESS.elapsed)+' gün sonra</span>'+(um!=null?'<span class="tk-cd" data-unlock="'+um+'" title="görevlerin açılmasına kalan süre">…</span>':''))
+    : st==='missed'?'<span class="tk-tag miss">kaçırıldı</span>':'';
+  return '<div class="tk-daybox '+st+(isToday?' today':'')+'"'+(isToday?' id="tkTodayBox"':'')+'>'
+    +'<div class="tk-dhead"><b>'+day+'. gün</b>'+tag+'<span class="tk-prog">'+n+'/'+DAY_TASKS.length+'</span></div>'
+    +'<div class="tk-tasks">'+tasks+'</div>'
+    +'<div class="tk-motiv">✨ '+esc(d.motivation)+'</div>'
+    +'</div>';
+}
+function render(){
+  const days=PROG.days||[], p=PROGRESS;
+  const badges=(p.badges||[]).map(b=>'<span class="tk-badge">🏅 '+esc(b)+'</span>').join('')||'<span class="sub">İlk rozetin 7. günde 🔓</span>';
+  const reorder=p.elapsed>=20?'<div class="tk-upsell"><span>⏳ <b>Ürünlerin bitmek üzere</b> — setini tek tıkla tazele, programın aksamasın.</span><button class="btn btn-sm" id="reorderBtn">🛒 Seti sepete ekle</button></div>':'';
+  let agenda='';
+  for(let w=1;w<=4;w++){
+    const wdays=days.filter(d=>weekOf(d.day)===w);
+    if(!wdays.length)continue;
+    const theme=(PROG.weeks||[]).find(x=>x.week===w);
+    agenda+='<div class="tk-week"><span class="wn">'+w+'. HAFTA</span>'+(theme?'<span class="wt">'+esc(theme.theme)+'</span>':'')+'</div>';
+    agenda+='<div class="tk-days">'+wdays.map(dayCardHtml).join('')+'</div>';
+  }
+  root.innerHTML=
+    '<div class="tk-panel">'
+    +  '<div class="tk-ring" style="--p:'+p.dedication+'"><b>%'+p.dedication+'</b><small>sadakat</small></div>'
+    +  '<div class="tk-stats"><div><b>🔥 '+p.streak+'</b><small>tam gün serisi</small></div><div><b>'+p.points+'</b><small>puan</small></div><div><b>'+p.doneCount+'/30</b><small>tam gün</small></div></div>'
+    +  '<div class="tk-badges">'+badges+'</div>'
+    +'</div>'
+    +'<div class="tk-sech">📅 30 günlük programın <span class="sub" style="font-weight:500">· her görevi yaptıkça kutusunu işaretle</span></div>'
+    +agenda
+    +reorder
+    +'<div class="tk-actions"><button class="btn btn-ghost btn-sm" id="pdfBtn">⬇️ PDF indir</button><a class="btn btn-ghost btn-sm" href="koc.html">✨ Yeni program</a></div>'
+    +'<p class="coach-disc">Bu program genel bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sonuçlar kişiden kişiye değişir; dengeli beslenme ve düzenli aktiviteyle birlikte değerlendirilmelidir.</p>';
+  root.querySelectorAll('.tk-task:not([disabled])').forEach(b=>b.addEventListener('click',()=>{
+    const day=parseInt(b.dataset.day), task=b.dataset.task;
+    toggleTask(day,task,!isTaskDone(day,task));
+  }));
+  const rb=$('#reorderBtn'); if(rb)rb.addEventListener('click',reorderSet);
+  $('#pdfBtn').addEventListener('click',downloadPdf);
+}
+async function toggleTask(day,task,done){
+  try{
+    const r=await fetch('/api/programs/'+PROG.id+'/day',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({day,task,done})});
+    const d=await r.json().catch(()=>({})); if(!r.ok){ toast(d.error||'Olmadı'); return; }
+    const prevBadges=(PROGRESS.badges||[]).length, wasComplete=dayComplete(day);
+    PROGRESS=d.progress; render();
+    if(done) toast('İşaretlendi · +5 puan ✓');
+    if(!wasComplete && dayComplete(day)) toast('🎉 '+day+'. gün tamamlandı!');
+    if((PROGRESS.badges||[]).length>prevBadges) toast('🏅 Yeni rozet: '+PROGRESS.badges[PROGRESS.badges.length-1]);
+  }catch(e){ toast('Bağlantı hatası'); }
+}
+/* ileri günler için canlı geri sayım (gün : saat : dk : sn) */
+let _cdTimer=null, _reloading=false;
+function startCountdown(){ if(_cdTimer)return; _cdTimer=setInterval(tickCountdowns,1000); tickCountdowns(); }
+function tickCountdowns(){
+  const els=document.querySelectorAll('.tk-cd'); if(!els.length)return;
+  const now=Date.now(); const pad=n=>String(n).padStart(2,'0'); let unlocked=false;
+  els.forEach(el=>{
+    let rem=(parseInt(el.getAttribute('data-unlock'))||0)-now;
+    if(rem<=0){ el.textContent='açılıyor…'; unlocked=true; return; }
+    const d=Math.floor(rem/86400000); rem-=d*86400000;
+    const h=Math.floor(rem/3600000); rem-=h*3600000;
+    const m=Math.floor(rem/60000); rem-=m*60000;
+    const s=Math.floor(rem/1000);
+    el.textContent=(d>0?d+'g ':'')+pad(h)+':'+pad(m)+':'+pad(s);
+  });
+  if(unlocked && !_reloading){ _reloading=true; setTimeout(()=>{ _reloading=false; load(); },1500); }  // gün açıldı → tazele
+}
+function reorderSet(){
+  const ps=PROG.products||[];
+  if(!ps.length){ toast('Bu programda kayıtlı ürün yok'); return; }
+  ps.forEach(p=>window.addToCart&&window.addToCart({id:p.slug,name:p.name,price:p.price}));
+  toast(ps.length+' ürünlük setin sepete eklendi ✓');
+}
+
+/* ---------- PDF (sunucu üretir, gerçek dosya iner) ---------- */
+async function downloadPdf(){
+  if(!PROG){ toast('Program yok'); return; }
+  const btn=$('#pdfBtn'); let _o=''; if(btn){ _o=btn.innerHTML; btn.disabled=true; btn.innerHTML='Hazırlanıyor…'; }
+  try{
+    const u=(window.currentUser&&window.currentUser())||null;
+    const body={ name:(u&&u.name)||'', goal:PROG.goal, plan:PROG.plan, products:PROG.products, weeks:PROG.weeks, days:PROG.days };
+    const r=await fetch('/api/program-pdf',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify(body)});
+    if(!r.ok) throw new Error('pdf');
+    const blob=await r.blob(); const url=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download='Goodsoria-30-gunluk-program.pdf'; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),4000);
+    toast('PDF indirildi ✓');
+  }catch(e){ toast('PDF oluşturulamadı, tekrar dene'); }
+  finally{ if(btn){ btn.disabled=false; btn.innerHTML=_o; } }
+}
+
+load();
+</script>
+</body>
+</html>

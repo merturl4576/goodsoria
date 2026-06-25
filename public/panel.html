@@ -54,6 +54,8 @@
           <div class="act"><a class="btn btn-ghost btn-sm" href="magaza.html">Tekrar sipariş ver</a><a class="btn btn-primary btn-sm" href="distributor.html">Ekip davet et</a></div>
         </div>
 
+        <div id="todaySlot"></div>
+
         <!-- KPIs -->
         <div class="kpis">
           <div class="kpi" data-reveal><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18v12H3z"/><path d="M3 7l9 6 9-6"/></svg></span><small>Aktif sipariş</small><b id="pa-active">0</b><span class="delta" id="pa-active-d">—</span></div>
@@ -162,6 +164,24 @@ if(window.authReady)window.authReady.then(async u=>{
     _renderOrders(orders);
   }catch(e){}
 });
+
+/* aktif program varsa "bugünün görevi" mini kartı */
+(async function todayCard(){
+  try{
+    const r=await fetch('/api/programs/active',{credentials:'same-origin'});
+    if(!r.ok)return;
+    const d=await r.json().catch(()=>null); if(!d||!d.program)return;
+    const day=Math.min(30,d.progress.elapsed);
+    const t=(d.program.days||[]).find(x=>x.day===day); if(!t)return;
+    const host=document.getElementById('todaySlot'); if(!host)return;
+    const enc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    host.innerHTML='<a href="takvim.html" style="display:block;text-decoration:none;background:linear-gradient(135deg,#16623a,#0d3f25);color:#fff;border-radius:16px;padding:1rem 1.2rem;margin:.2rem 0 1.2rem">'
+      +'<div style="display:flex;justify-content:space-between;gap:.6rem;flex-wrap:wrap;font-size:.78rem;opacity:.92;font-weight:700"><span>📅 Bugünün görevi · '+day+'. gün</span><span>%'+d.progress.dedication+' sadakat · 🔥'+d.progress.streak+'</span></div>'
+      +'<div style="font-family:\'Bricolage Grotesque\',system-ui;font-weight:700;font-size:1.05rem;margin:.4rem 0 .25rem">🌿 '+enc(t.product)+'</div>'
+      +'<div style="font-size:.82rem;opacity:.92">🥗 '+enc(t.nutrition)+'</div>'
+      +'<div style="margin-top:.55rem;font-size:.82rem;font-weight:800;color:#c8f560">Takvime git →</div></a>';
+  }catch(e){}
+})();
 </script>
 </body>
 </html>
